@@ -1,7 +1,7 @@
 ---
 title: "Sample Human Interest Film"
 year: 2023
-category: "Human Interest"
+categories: ["Human Interest", "Health Sciences"]
 platform: "vimeo"
 videoId: "76979871"
 thumbnail: "/images/films/sample-human.png"

@@ -1,7 +1,7 @@
 ---
 title: "Sample Space Film"
 year: 2024
-category: "Space & Astronomy"
+categories: ["Space & Astronomy", "Education"]
 platform: "youtube"
 videoId: "dQw4w9WgXcQ"
 thumbnail: "/images/films/sample-space.png"
