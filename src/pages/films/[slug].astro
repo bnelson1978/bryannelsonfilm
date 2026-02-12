@@ -1,0 +1,62 @@
+---
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const films = await getCollection("films");
+  return films.map((film) => ({
+    params: { slug: film.slug },
+    props: { film },
+  }));
+}
+
+const { film } = Astro.props;
+
+const title = film.data.title;
+const { platform, videoId } = film.data;
+
+const embedUrl =
+  platform === "youtube"
+    ? `https://www.youtube-nocookie.com/embed/${videoId}`
+    : `https://player.vimeo.com/video/${videoId}`;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <main style="max-width: 980px; margin: 48px auto; padding: 0 20px; color: #fff;">
+      <a href="/" style="color:#bbb; text-decoration:none;">← Back</a>
+      <h1 style="margin: 14px 0 6px;">{title}</h1>
+      <p style="margin:0 0 18px; color:#bbb;">
+        {film.data.category}{film.data.year ? ` • ${film.data.year}` : ""}
+      </p>
+
+      <div style="position:relative; padding-top:56.25%; background:#111; border:1px solid #222;">
+        <iframe
+          src={embedUrl}
+          title={title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          style="position:absolute; inset:0; width:100%; height:100%; border:0;"
+        />
+      </div>
+
+      {film.data.logline && (
+        <p style="margin:18px 0 0; color:#ddd; font-size: 1.05rem;">
+          {film.data.logline}
+        </p>
+      )}
+
+      {film.body && (
+        <article style="margin-top:18px; color:#bbb; line-height:1.65;" set:html={film.body} />
+      )}
+    </main>
+
+    <style>
+      :global(body) { margin:0; background:#070707; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
+    </style>
+  </body>
+</html>
