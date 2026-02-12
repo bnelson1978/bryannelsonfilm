@@ -1,7 +1,7 @@
 ---
 title: "Quantum Consciousness and the Origin of Life"
 year: 2025
-categories: ["Human Interest"]
+categories: ["Human Interest", "Space & Astronomy"]
 platform: "youtube"
 videoId: "XA9Q5p9ODac"
 thumbnail: "/images/films/quantum-consciousness.png"

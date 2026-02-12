@@ -16,6 +16,7 @@ const films = defineCollection({
     title: z.string(),
     year: z.number().optional(),
     categories: z.array(CATEGORY).min(1),
+    award: z.string().optional(), // NEW
     platform: z.enum(["youtube", "vimeo"]),
     videoId: z.string(),
     thumbnail: z.string(),
@@ -24,3 +25,4 @@ const films = defineCollection({
 });
 
 export const collections = { films };
+

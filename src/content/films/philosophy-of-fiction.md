@@ -1,7 +1,8 @@
 ---
 title: "Philosophy of Fiction"
 year: 2024
-categories: ["Human Interest", "Arts & Culture"]
+categories: ["Human Interest", "Arts & Culture", "Education"]
+award: "Emmy Award Nominee"
 platform: "youtube"
 videoId: "8QQWqYe3_S8"
 thumbnail: "/images/films/philosophy-of-fiction.png"

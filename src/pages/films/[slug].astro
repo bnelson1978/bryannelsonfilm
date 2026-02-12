@@ -29,10 +29,18 @@ const embedUrl =
   <body>
     <main style="max-width: 980px; margin: 48px auto; padding: 0 20px; color: #fff;">
       <a href="/" style="color:#bbb; text-decoration:none;">← Back</a>
+
       <h1 style="margin: 14px 0 6px;">{title}</h1>
-      <p style="margin:0 0 18px; color:#bbb;">
-        {film.data.category}{film.data.year ? ` • ${film.data.year}` : ""}
+
+      <p style="margin:0 0 10px; color:#bbb;">
+        {film.data.categories.join(" • ")}{film.data.year ? ` • ${film.data.year}` : ""}
       </p>
+
+      {film.data.award && (
+        <p style="margin:0 0 18px; color:#ffd700; font-weight:500;">
+          🏆 {film.data.award}
+        </p>
+      )}
 
       <div style="position:relative; padding-top:56.25%; background:#111; border:1px solid #222;">
         <iframe
@@ -44,19 +52,17 @@ const embedUrl =
         />
       </div>
 
-      {film.data.logline && (
-        <p style="margin:18px 0 0; color:#ddd; font-size: 1.05rem;">
-          {film.data.logline}
-        </p>
-      )}
-
       {film.body && (
         <article style="margin-top:18px; color:#bbb; line-height:1.65;" set:html={film.body} />
       )}
     </main>
 
     <style>
-      :global(body) { margin:0; background:#070707; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
+      :global(body){
+        margin:0;
+        background:#070707;
+        font-family:ui-sans-serif,system-ui;
+      }
     </style>
   </body>
 </html>
