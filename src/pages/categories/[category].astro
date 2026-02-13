@@ -1,0 +1,148 @@
+---
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const categories = [
+    "Human Interest",
+    "Space & Astronomy",
+    "Health Sciences",
+    "Arts & Culture",
+    "Nature & Environment",
+    "Education",
+    "Innovation & Technology",
+  ];
+
+  return categories.map((category) => ({
+    params: { category },
+  }));
+}
+
+const category = Astro.params.category;
+
+const films = await getCollection("films");
+const filtered = films.filter((f) => f.data.categories.includes(category));
+
+// Sort: manual order for that category (ascending). Missing => bottom.
+// Tie-breakers: year desc, then title.
+const ordered = filtered.sort((a, b) => {
+  const ao = a.data.categoryOrder?.[category] ?? 999999;
+  const bo = b.data.categoryOrder?.[category] ?? 999999;
+  if (ao !== bo) return ao - bo;
+
+  const ay = a.data.year ?? 0;
+  const by = b.data.year ?? 0;
+  if (ay !== by) return by - ay;
+
+  return a.data.title.localeCompare(b.data.title);
+});
+
+function getEmbedUrl(platform, videoId) {
+  return platform === "youtube"
+    ? `https://www.youtube-nocookie.com/embed/${videoId}`
+    : `https://player.vimeo.com/video/${videoId}`;
+}
+
+function normalizeAwards(film) {
+  // Support both old award: string and new awards: string[]
+  const list = film.data.awards ?? (film.data.award ? [film.data.award] : []);
+  return Array.isArray(list) ? list : [];
+}
+
+function awardClass(a) {
+  if (typeof a !== "string") return "awardEmmy";
+  return a.toLowerCase().includes("murrow") ? "awardMurrow" : "awardEmmy";
+}
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{category}</title>
+  </head>
+  <body>
+    <main class="wrap">
+      <a href="/categories" class="back">← Back</a>
+
+      <header class="top">
+        <h1>{category}</h1>
+        <p class="count">{ordered.length} film{ordered.length === 1 ? "" : "s"}</p>
+      </header>
+
+      <section class="list">
+        {ordered.map((film) => {
+          const embedUrl = getEmbedUrl(film.data.platform, film.data.videoId);
+          const awards = normalizeAwards(film);
+
+          return (
+            <article class="item">
+              <div class="itemHead">
+                <div>
+                  <h2 class="title">{film.data.title}</h2>
+
+                  <div class="meta">
+                    {film.data.year ? <span>{film.data.year}</span> : null}
+                    {awards.length ? (
+                      <span>
+                        {awards.map((a) => (
+                          <span class={awardClass(a)}> • 🏆 {a}</span>
+                        ))}
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+
+                {(film.data.featured || film.data.home) ? (
+                  <a class="open" href={`/films/${film.slug}`}>Open page</a>
+                ) : null}
+              </div>
+
+              <div class="player">
+                <iframe
+                  src={embedUrl}
+                  title={film.data.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                />
+              </div>
+
+              {film.body ? (
+                <div class="desc" set:html={film.body} />
+              ) : (film.data.logline ? (
+                <p class="desc">{film.data.logline}</p>
+              ) : null)}
+            </article>
+          );
+        })}
+      </section>
+    </main>
+
+    <style>
+      :global(body){margin:0;background:#070707;color:#fff;font-family:ui-sans-serif,system-ui}
+      .wrap{max-width:980px;margin:48px auto;padding:0 20px}
+      .back{color:#bbb;text-decoration:none}
+      .top{margin:14px 0 22px}
+      h1{margin:0 0 6px;font-size:2rem}
+      .count{margin:0;color:#bbb}
+
+      .list{display:flex;flex-direction:column;gap:28px}
+
+      .item{border:1px solid #151515;background:#0b0b0b}
+      .itemHead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:14px 14px 0}
+      .title{margin:0;font-size:1.25rem}
+      .meta{margin-top:6px;color:#aaa;font-size:.9rem}
+
+      .awardEmmy{color:#ffd700;font-weight:500}
+      .awardMurrow{color:#4aa3ff;font-weight:500}
+
+      .open{color:#ddd;text-decoration:none;border:1px solid #222;background:#111;padding:8px 10px;border-radius:999px;white-space:nowrap}
+
+      .player{position:relative;padding-top:56.25%;margin:12px 14px 0;background:#111;border-top:1px solid #151515;border-bottom:1px solid #151515}
+      .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+      .desc{padding:14px;color:#bbb;line-height:1.65}
+      .desc :global(p){margin:0 0 10px}
+      .desc :global(p:last-child){margin-bottom:0}
+    </style>
+  </body>
+</html>

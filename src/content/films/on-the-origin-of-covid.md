@@ -3,6 +3,7 @@ title: "On the Origin of COVID"
 year: 2024
 categories: ["Health Sciences", "Human Interest"]
 award: "Emmy Award Winner"
+home: true
 platform: "youtube"
 videoId: "7fjXhOXl7VU"
 thumbnail: "/images/films/on-the-origin-of-covid.jpg"

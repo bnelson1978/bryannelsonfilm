@@ -1,0 +1,46 @@
+---
+const CATEGORY_ORDER = [
+  "Human Interest",
+  "Space & Astronomy",
+  "Health Sciences",
+  "Arts & Culture",
+  "Nature & Environment",
+  "Education",
+  "Innovation & Technology",
+];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Categories</title>
+  </head>
+
+  <body>
+    <main style="max-width:980px;margin:48px auto;padding:0 20px;color:#fff;">
+      <a href="/" style="color:#bbb;text-decoration:none;">← Back</a>
+
+      <h1 style="margin:14px 0 18px;">Categories</h1>
+
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        {CATEGORY_ORDER.map((c) => (
+          <a
+            href={`/categories/${encodeURIComponent(c)}`}
+            style="border:1px solid #222;background:#0f0f0f;color:#ddd;padding:10px 12px;border-radius:999px;text-decoration:none;"
+          >
+            {c}
+          </a>
+        ))}
+      </div>
+    </main>
+
+    <style>
+      :global(body){
+        margin:0;
+        background:#070707;
+        font-family:ui-sans-serif,system-ui;
+      }
+    </style>
+  </body>
+</html>

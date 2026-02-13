@@ -9,10 +9,48 @@ const CATEGORY_ORDER = [
   "Nature & Environment",
   "Education",
   "Innovation & Technology",
+  "New Frontiers", // NEW
 ];
 
 const films = await getCollection("films");
-const sorted = films.sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
+
+const featured = films.find((f) => f.data.featured);
+
+const homeFilms = films
+  .filter((f) => f.data.home)
+  .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
+
+function isMurrow(text) {
+  return typeof text === "string" && text.toLowerCase().includes("murrow");
+}
+function awardColor(text) {
+  return isMurrow(text) ? "#4aa3ff" : "#ffd700";
+}
+function getAwards(film) {
+  if (Array.isArray(film.data.awards) && film.data.awards.length) return film.data.awards;
+  if (typeof film.data.award === "string" && film.data.award.trim()) return [film.data.award.trim()];
+  return [];
+}
+
+function byHomeSection(tag) {
+  return films
+    .filter((f) => Array.isArray(f.data.homeSections) && f.data.homeSections.includes(tag))
+    .sort((a, b) => {
+      const ao = a.data.homeSectionOrder?.[tag] ?? 999999;
+      const bo = b.data.homeSectionOrder?.[tag] ?? 999999;
+      if (ao !== bo) return ao - bo;
+
+      const ay = a.data.year ?? 0;
+      const by = b.data.year ?? 0;
+      if (ay !== by) return by - ay;
+
+      return a.data.title.localeCompare(b.data.title);
+    });
+}
+
+const osiris = byHomeSection("osiris-rex");
+const fredFox = byHomeSection("fred-fox");
+const newFrontiers = byHomeSection("new-frontiers");
 ---
 
 <html lang="en">
@@ -21,114 +59,460 @@ const sorted = films.sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
     <meta name="viewport" content="width=device-width" />
     <title>Bryan Nelson — Documentary Filmmaker</title>
   </head>
+
   <body>
     <main class="wrap">
-      <header class="hero">
+      <header class="heroTop">
         <div>
           <h1>Bryan Nelson</h1>
-          <p class="sub">Documentary Filmmaker • Founder, Catachresis Film</p>
+          <p class="sub">Documentary Filmmaker • Founder, Catachresis Productions</p>
         </div>
         <nav class="actions">
+          <a href="/categories" class="btn ghost">Categories</a>
           <a href="/contact" class="btn">Contact</a>
           <a href="/about" class="btn ghost">About</a>
         </nav>
       </header>
 
-      <section class="filters">
-        <button class="chip is-active" data-cat="All">All</button>
-        {CATEGORY_ORDER.map((c) => <button class="chip" data-cat={c}>{c}</button>)}
-      </section>
+      {/* Featured */}
+      <section class="sectionBlock">
+        <div class="sectionHead">
+          <h2 class="sectionTitle">Featured</h2>
+        </div>
 
-      <section class="grid" id="filmGrid">
-        {sorted.map((film) => (
-          <a
-            class="card"
-            href={`/films/${film.slug}`}
-            data-cats={film.data.categories.join("|")}
-          >
-            <div class="thumb">
-              <img src={film.data.thumbnail} alt={film.data.title} loading="lazy" />
+        {featured ? (
+          <a class="featuredCard cardHover" href={`/films/${featured.slug}`}>
+            <div class="featuredImg thumb">
+              <img src={featured.data.thumbnail} alt={featured.data.title} />
             </div>
 
-            <div class="meta">
-              <div class="title">{film.data.title}</div>
-
-              <div class="kicker">
-                <span>{film.data.categories[0]}</span>
-                {film.data.year ? <span> • {film.data.year}</span> : null}
+            <div class="featuredMeta">
+              <div class="featuredKicker">
+                <span>{featured.data.categories[0]}</span>
+                {featured.data.year ? <span> • {featured.data.year}</span> : null}
               </div>
 
-              {film.data.award && (
-                <div class="award">
-                  🏆 {film.data.award}
+              <h3 class="featuredTitle">{featured.data.title}</h3>
+
+              {getAwards(featured).length ? (
+                <div class="awardsStack">
+                  {getAwards(featured).map((a) => (
+                    <div style={`color:${awardColor(a)}; font-weight:500;`}>
+                      🏆 {a}
+                    </div>
+                  ))}
                 </div>
-              )}
+              ) : null}
+
+              {featured.data.logline ? (
+                <p class="featuredLogline">{featured.data.logline}</p>
+              ) : null}
+
+              <span class="watchBtn">Watch</span>
             </div>
           </a>
-        ))}
+        ) : (
+          <p class="muted">No featured film set yet.</p>
+        )}
+      </section>
+
+      <hr class="sectionDivider" />
+
+      {/* Browse categories */}
+      <section class="sectionBlock">
+        <div class="sectionHead">
+          <h2 class="sectionTitle">Browse Films by Category</h2>
+          <span class="mutedSmall">Jump to a category page</span>
+        </div>
+
+        <div class="catRow">
+          {CATEGORY_ORDER.map((c) => (
+            <a class="catPill" href={`/categories/${encodeURIComponent(c)}`}>
+              {c}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <hr class="sectionDivider" />
+
+      {/* Selected Films */}
+      <section class="sectionBlock">
+        <div class="sectionHead split">
+          <h2 class="sectionTitle">Selected Films</h2>
+          <a class="seeAll" href="/categories">See all</a>
+        </div>
+
+        <section class="grid">
+          {homeFilms.map((film) => (
+            <a class="card cardHover" href={`/films/${film.slug}`}>
+              <div class="thumb">
+                <img src={film.data.thumbnail} alt={film.data.title} loading="lazy" />
+              </div>
+
+              <div class="meta">
+                <div class="title">{film.data.title}</div>
+
+                <div class="kicker">
+                  <span>{film.data.categories[0]}</span>
+                  {film.data.year ? <span> • {film.data.year}</span> : null}
+                </div>
+
+                {getAwards(film).length ? (
+                  <div class="awardsStack">
+                    {getAwards(film).map((a) => (
+                      <div style={`color:${awardColor(a)}; font-weight:500;`}>
+                        🏆 {a}
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            </a>
+          ))}
+        </section>
+      </section>
+
+      <hr class="sectionDivider" />
+
+      {/* OSIRIS */}
+      <section class="sectionBlock">
+        <div class="sectionHead split">
+          <h2 class="sectionTitle">OSIRIS-REx Mission Coverage</h2>
+          <span class="scrollHint">← scroll →</span>
+        </div>
+
+        <div class="rowWrap" data-rowwrap>
+          <button class="rowArrow left" type="button" aria-label="Scroll left" data-arrow="left">‹</button>
+          <button class="rowArrow right" type="button" aria-label="Scroll right" data-arrow="right">›</button>
+
+          <div class="edgeGlow left" data-glow="left"></div>
+          <div class="edgeGlow right" data-glow="right"></div>
+
+          <div class="rowPad">
+            <div class="rowStrip" data-rowstrip>
+              {osiris.map((film) => (
+                <a class="card rowCard cardHover" href={`/films/${film.slug}`}>
+                  <div class="thumb">
+                    <img src={film.data.thumbnail} alt={film.data.title} loading="lazy" />
+                  </div>
+
+                  <div class="meta">
+                    <div class="title">{film.data.title}</div>
+
+                    <div class="kicker">
+                      <span>{film.data.categories[0]}</span>
+                      {film.data.year ? <span> • {film.data.year}</span> : null}
+                    </div>
+
+                    {getAwards(film).length ? (
+                      <div class="awardsStack">
+                        {getAwards(film).map((a) => (
+                          <div style={`color:${awardColor(a)}; font-weight:500;`}>
+                            🏆 {a}
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <hr class="sectionDivider" />
+
+      {/* Fred Fox */}
+      <section class="sectionBlock">
+        <div class="sectionHead split">
+          <h2 class="sectionTitle">Fred Fox School of Music Series</h2>
+          <span class="scrollHint">← scroll →</span>
+        </div>
+
+        <div class="rowWrap" data-rowwrap>
+          <button class="rowArrow left" type="button" aria-label="Scroll left" data-arrow="left">‹</button>
+          <button class="rowArrow right" type="button" aria-label="Scroll right" data-arrow="right">›</button>
+
+          <div class="edgeGlow left" data-glow="left"></div>
+          <div class="edgeGlow right" data-glow="right"></div>
+
+          <div class="rowPad">
+            <div class="rowStrip" data-rowstrip>
+              {fredFox.map((film) => (
+                <a class="card rowCard cardHover" href={`/films/${film.slug}`}>
+                  <div class="thumb">
+                    <img src={film.data.thumbnail} alt={film.data.title} loading="lazy" />
+                  </div>
+
+                  <div class="meta">
+                    <div class="title">{film.data.title}</div>
+
+                    <div class="kicker">
+                      <span>{film.data.categories[0]}</span>
+                      {film.data.year ? <span> • {film.data.year}</span> : null}
+                    </div>
+
+                    {getAwards(film).length ? (
+                      <div class="awardsStack">
+                        {getAwards(film).map((a) => (
+                          <div style={`color:${awardColor(a)}; font-weight:500;`}>
+                            🏆 {a}
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <hr class="sectionDivider" />
+
+      {/* New Frontiers */}
+      <section class="sectionBlock">
+        <div class="sectionHead split">
+          <h2 class="sectionTitle">New Frontiers: Full Episodes</h2>
+          <span class="scrollHint">← scroll →</span>
+        </div>
+
+        <div class="rowWrap" data-rowwrap>
+          <button class="rowArrow left" type="button" aria-label="Scroll left" data-arrow="left">‹</button>
+          <button class="rowArrow right" type="button" aria-label="Scroll right" data-arrow="right">›</button>
+
+          <div class="edgeGlow left" data-glow="left"></div>
+          <div class="edgeGlow right" data-glow="right"></div>
+
+          <div class="rowPad">
+            <div class="rowStrip" data-rowstrip>
+              {newFrontiers.map((film) => (
+                <a class="card rowCard cardHover" href={`/films/${film.slug}`}>
+                  <div class="thumb">
+                    <img src={film.data.thumbnail} alt={film.data.title} loading="lazy" />
+                  </div>
+
+                  <div class="meta">
+                    <div class="title">{film.data.title}</div>
+
+                    <div class="kicker">
+                      <span>{film.data.categories[0]}</span>
+                      {film.data.year ? <span> • {film.data.year}</span> : null}
+                    </div>
+
+                    {getAwards(film).length ? (
+                      <div class="awardsStack">
+                        {getAwards(film).map((a) => (
+                          <div style={`color:${awardColor(a)}; font-weight:500;`}>
+                            🏆 {a}
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
     </main>
 
-    <script>
-      const chips = Array.from(document.querySelectorAll(".chip"));
-      const cards = Array.from(document.querySelectorAll(".card"));
-
-      function setActive(cat) {
-        chips.forEach((c) => c.classList.toggle("is-active", c.dataset.cat === cat));
-        cards.forEach((card) => {
-          const cats = (card.dataset.cats || "").split("|");
-          const show = cat === "All" || cats.includes(cat);
-          card.style.display = show ? "" : "none";
-        });
-      }
-
-      chips.forEach((chip) => {
-        chip.addEventListener("click", () => setActive(chip.dataset.cat));
-      });
-    </script>
-
     <style>
       :global(body){margin:0;background:#070707;color:#fff;font-family:ui-sans-serif,system-ui}
-
       .wrap{max-width:1100px;margin:48px auto;padding:0 20px}
 
-      .hero{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
-
+      /* Top header */
+      .heroTop{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px}
       h1{margin:0;font-size:2.2rem}
       .sub{margin:6px 0 0;color:#bbb}
-
-      .actions{display:flex;gap:10px}
-
+      .actions{display:flex;gap:10px;flex-wrap:wrap}
       .btn{border:1px solid #222;padding:10px 14px;border-radius:999px;color:#fff;text-decoration:none;background:#111}
       .btn.ghost{background:transparent;color:#ddd}
 
-      .filters{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 22px}
+      /* Section framing */
+      .sectionBlock{padding:10px 0}
+      .sectionHead{display:flex;align-items:baseline;justify-content:flex-start;gap:12px;margin-bottom:10px}
+      .sectionHead.split{justify-content:space-between}
+      .sectionTitle{margin:0;font-size:1.2rem}
+      .muted{color:#9a9a9a}
+      .mutedSmall{color:#7f7f7f;font-size:.9rem}
+      .seeAll{color:#bbb;text-decoration:none;border-bottom:1px solid #222;padding-bottom:2px}
 
-      .chip{border:1px solid #222;background:#0f0f0f;color:#ddd;padding:10px 12px;border-radius:999px;cursor:pointer}
-      .chip.is-active{background:#1a1a1a;color:#fff;border-color:#333}
-
-      .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-
-      .card{text-decoration:none;color:inherit;border:1px solid #151515;background:#0b0b0b}
-
-      .thumb{aspect-ratio:16/9;overflow:hidden;background:#111}
-      .thumb img{width:100%;height:100%;object-fit:cover}
-
-      .meta{padding:12px}
-
-      .title{font-weight:600}
-
-      .kicker{margin-top:6px;color:#aaa;font-size:.9rem}
-
-      .award{
-        margin-top:8px;
-        color:#ffd700;
-        font-size:.85rem;
-        font-weight:500;
+      /* Cinematic divider (gradient + faint glow) */
+      .sectionDivider{
+        border:0;
+        height:1px;
+        margin:26px 0;
+        background: linear-gradient(
+          90deg,
+          rgba(7,7,7,0) 0%,
+          rgba(255,255,255,0.08) 20%,
+          rgba(255,255,255,0.14) 50%,
+          rgba(255,255,255,0.08) 80%,
+          rgba(7,7,7,0) 100%
+        );
+        box-shadow: 0 0 18px rgba(255,255,255,0.06);
       }
 
-      @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
-      @media(max-width:600px){.grid{grid-template-columns:1fr}}
+      /* Featured */
+      .featuredCard{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;border:1px solid #151515;background:#0b0b0b;text-decoration:none;color:inherit}
+      .featuredImg{aspect-ratio:16/9;overflow:hidden;background:#111}
+      .featuredMeta{padding:14px}
+      .featuredKicker{color:#aaa;font-size:.9rem}
+      .featuredTitle{margin:10px 0 8px;font-size:1.6rem}
+      .featuredLogline{margin:10px 0 14px;color:#bbb;line-height:1.6}
+      .watchBtn{display:inline-block;border:1px solid #222;background:#111;padding:10px 14px;border-radius:999px}
+
+      /* Browse category pills */
+      .catRow{display:flex;flex-wrap:wrap;gap:10px}
+      .catPill{
+        display:inline-flex;
+        align-items:center;
+        padding:10px 14px;
+        border-radius:999px;
+        border:1px solid #1f1f1f;
+        background: linear-gradient(180deg, rgba(18,18,18,.9), rgba(10,10,10,.9));
+        color:#e7e7e7;
+        text-decoration:none;
+        transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      }
+      .catPill:hover{
+        transform: translateY(-2px);
+        border-color:#2b2b2b;
+        background: linear-gradient(180deg, rgba(24,24,24,.95), rgba(12,12,12,.95));
+      }
+
+      /* Grid + cards */
+      .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+      .card{border:1px solid #151515;background:#0b0b0b;text-decoration:none;color:inherit;display:block}
+      .thumb{aspect-ratio:16/9;overflow:hidden;background:#111}
+      .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+      .meta{padding:12px}
+      .title{font-weight:600}
+      .kicker{margin-top:6px;color:#aaa;font-size:.9rem}
+      .awardsStack{margin-top:8px;font-size:.85rem;line-height:1.35}
+
+      /* Hover zoom + lift */
+      .cardHover{transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;will-change:transform}
+      .cardHover .thumb img{transition:transform .32s ease;will-change:transform}
+      .cardHover:hover{transform:translateY(-4px);box-shadow:0 18px 34px rgba(0,0,0,.55);border-color:#222}
+      .cardHover:hover .thumb img{transform:scale(1.04)}
+      @media (prefers-reduced-motion: reduce){
+        .cardHover, .cardHover .thumb img{transition:none}
+      }
+
+      /* Rolodex rows */
+      .scrollHint{color:#8a8a8a;font-size:.9rem}
+      .rowWrap{position:relative}
+      .rowPad{padding:2px 4px 10px}
+      .rowStrip{
+        display:flex;
+        gap:16px;
+        overflow-x:auto;
+        scroll-snap-type:x mandatory;
+        scroll-behavior:smooth;
+        -webkit-overflow-scrolling:touch;
+        padding:0;
+      }
+      .rowCard{flex:0 0 auto;width:270px;scroll-snap-align:start}
+
+      /* Arrow buttons */
+      .rowArrow{
+        position:absolute;top:50%;transform:translateY(-55%);
+        z-index:5;width:42px;height:42px;border-radius:999px;
+        border:1px solid #222;background:rgba(10,10,10,.78);color:#fff;
+        font-size:26px;display:flex;align-items:center;justify-content:center;
+        cursor:pointer;transition:opacity .18s ease, transform .18s ease, background .18s ease;
+        opacity:0;pointer-events:none;
+      }
+      .rowArrow.left{left:8px}
+      .rowArrow.right{right:8px}
+      .rowWrap.is-scrollable .rowArrow{opacity:.92;pointer-events:auto}
+      .rowWrap.at-left .rowArrow.left{opacity:0 !important;pointer-events:none !important}
+      .rowWrap.at-right .rowArrow.right{opacity:0 !important;pointer-events:none !important}
+      .rowArrow:hover{background:rgba(20,20,20,.92);transform:translateY(-55%) scale(1.04)}
+
+      /* Edge glow */
+      .edgeGlow{position:absolute;top:0;bottom:0;width:80px;z-index:4;opacity:0;pointer-events:none;transition:opacity .18s ease}
+      .edgeGlow.left{left:0}
+      .edgeGlow.right{right:0}
+      .edgeGlow.left{
+        background:
+          radial-gradient(ellipse at left, rgba(140,190,255,.18), transparent 60%),
+          linear-gradient(to right, rgba(7,7,7,1), rgba(7,7,7,0));
+      }
+      .edgeGlow.right{
+        background:
+          radial-gradient(ellipse at right, rgba(255,215,0,.16), transparent 60%),
+          linear-gradient(to left, rgba(7,7,7,1), rgba(7,7,7,0));
+      }
+      .edgeGlow.is-on{opacity:1;animation:glowPulse 1.65s ease-in-out infinite}
+      @keyframes glowPulse{0%,100%{filter:blur(0)}50%{filter:blur(1.4px)}}
+
+      @media(max-width:900px){
+        .grid{grid-template-columns:repeat(2,1fr)}
+        .featuredCard{grid-template-columns:1fr}
+        .rowCard{width:255px}
+      }
+      @media(max-width:600px){
+        .grid{grid-template-columns:1fr}
+        .heroTop{flex-direction:column;align-items:flex-start}
+        .rowCard{width:235px}
+        .rowArrow{display:none}
+      }
     </style>
+
+    <script>
+      function setupRolodexRow(rowWrap) {
+        const strip = rowWrap.querySelector("[data-rowstrip]");
+        const btnL = rowWrap.querySelector('[data-arrow="left"]');
+        const btnR = rowWrap.querySelector('[data-arrow="right"]');
+        const glowL = rowWrap.querySelector('[data-glow="left"]');
+        const glowR = rowWrap.querySelector('[data-glow="right"]');
+
+        if (!strip) return;
+
+        const update = () => {
+          const maxScrollLeft = strip.scrollWidth - strip.clientWidth;
+          const canScroll = maxScrollLeft > 4;
+          const EPS = 10;
+
+          const atLeft = strip.scrollLeft <= EPS;
+          const atRight = strip.scrollLeft >= maxScrollLeft - EPS;
+
+          rowWrap.classList.toggle("is-scrollable", canScroll);
+          rowWrap.classList.toggle("at-left", canScroll && atLeft);
+          rowWrap.classList.toggle("at-right", canScroll && atRight);
+
+          if (glowL) glowL.classList.toggle("is-on", canScroll && !atLeft);
+          if (glowR) glowR.classList.toggle("is-on", canScroll && !atRight);
+        };
+
+        const scrollByAmount = (dir) => {
+          const amt = Math.max(240, Math.floor(strip.clientWidth * 0.9));
+          strip.scrollBy({ left: dir * amt, behavior: "smooth" });
+        };
+
+        if (btnL) btnL.addEventListener("click", () => scrollByAmount(-1));
+        if (btnR) btnR.addEventListener("click", () => scrollByAmount(1));
+
+        strip.addEventListener("scroll", () => requestAnimationFrame(update));
+        window.addEventListener("resize", () => requestAnimationFrame(update));
+
+        requestAnimationFrame(() => {
+          strip.scrollLeft = 0;
+          update();
+        });
+
+        setTimeout(update, 250);
+        setTimeout(update, 900);
+      }
+
+      document.querySelectorAll("[data-rowwrap]").forEach(setupRolodexRow);
+    </script>
   </body>
 </html>

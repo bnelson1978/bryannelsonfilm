@@ -2,6 +2,10 @@
 title: "Quantum Consciousness and the Origin of Life"
 year: 2025
 categories: ["Human Interest", "Space & Astronomy"]
+featured: true
+homeSections: ["osiris-rex"]
+homeSectionOrder:
+  osiris-rex: 5
 platform: "youtube"
 videoId: "XA9Q5p9ODac"
 thumbnail: "/images/films/quantum-consciousness.png"
