@@ -9,7 +9,7 @@ const CATEGORY_ORDER = [
   "Nature & Environment",
   "Education",
   "Innovation & Technology",
-  "New Frontiers", // NEW
+  "New Frontiers",
 ];
 
 const films = await getCollection("films");
@@ -51,6 +51,7 @@ function byHomeSection(tag) {
 const osiris = byHomeSection("osiris-rex");
 const fredFox = byHomeSection("fred-fox");
 const newFrontiers = byHomeSection("new-frontiers");
+const independentOriginals = byHomeSection("independent-originals");
 ---
 
 <html lang="en">
@@ -104,9 +105,7 @@ const newFrontiers = byHomeSection("new-frontiers");
                 </div>
               ) : null}
 
-              {featured.data.logline ? (
-                <p class="featuredLogline">{featured.data.logline}</p>
-              ) : null}
+              {featured.data.logline ? <p class="featuredLogline">{featured.data.logline}</p> : null}
 
               <span class="watchBtn">Watch</span>
             </div>
@@ -290,6 +289,55 @@ const newFrontiers = byHomeSection("new-frontiers");
           <div class="rowPad">
             <div class="rowStrip" data-rowstrip>
               {newFrontiers.map((film) => (
+                <a class="card rowCard cardHover" href={`/films/${film.slug}`}>
+                  <div class="thumb">
+                    <img src={film.data.thumbnail} alt={film.data.title} loading="lazy" />
+                  </div>
+
+                  <div class="meta">
+                    <div class="title">{film.data.title}</div>
+
+                    <div class="kicker">
+                      <span>{film.data.categories[0]}</span>
+                      {film.data.year ? <span> • {film.data.year}</span> : null}
+                    </div>
+
+                    {getAwards(film).length ? (
+                      <div class="awardsStack">
+                        {getAwards(film).map((a) => (
+                          <div style={`color:${awardColor(a)}; font-weight:500;`}>
+                            🏆 {a}
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <hr class="sectionDivider" />
+
+      {/* Independent Originals */}
+      <section class="sectionBlock">
+        <div class="sectionHead split">
+          <h2 class="sectionTitle">Independent Originals</h2>
+          <span class="scrollHint">← scroll →</span>
+        </div>
+
+        <div class="rowWrap" data-rowwrap>
+          <button class="rowArrow left" type="button" aria-label="Scroll left" data-arrow="left">‹</button>
+          <button class="rowArrow right" type="button" aria-label="Scroll right" data-arrow="right">›</button>
+
+          <div class="edgeGlow left" data-glow="left"></div>
+          <div class="edgeGlow right" data-glow="right"></div>
+
+          <div class="rowPad">
+            <div class="rowStrip" data-rowstrip>
+              {independentOriginals.map((film) => (
                 <a class="card rowCard cardHover" href={`/films/${film.slug}`}>
                   <div class="thumb">
                     <img src={film.data.thumbnail} alt={film.data.title} loading="lazy" />

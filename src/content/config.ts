@@ -8,7 +8,7 @@ const CATEGORY = z.enum([
   "Nature & Environment",
   "Education",
   "Innovation & Technology",
-  "New Frontiers", // NEW
+  "New Frontiers",
 ]);
 
 const HOME_SECTION = z.enum([
@@ -16,6 +16,7 @@ const HOME_SECTION = z.enum([
   "osiris-rex",
   "fred-fox",
   "new-frontiers",
+  "independent-originals", // NEW
 ]);
 
 const films = defineCollection({
