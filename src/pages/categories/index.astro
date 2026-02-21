@@ -1,4 +1,6 @@
 ---
+import { getCollection } from "astro:content";
+
 const CATEGORY_ORDER = [
   "Human Interest",
   "Space & Astronomy",
@@ -7,39 +9,173 @@ const CATEGORY_ORDER = [
   "Nature & Environment",
   "Education",
   "Innovation & Technology",
+  "New Frontiers",
 ];
+
+const films = await getCollection("films");
+
+// Make URL-safe slugs for category routes
+function categoryToSlug(category: string) {
+  return category
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+function countForCategory(category: string) {
+  return films.filter((f) => Array.isArray(f.data.categories) && f.data.categories.includes(category)).length;
+}
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Categories</title>
+    <title>Browse Films — Bryan Nelson</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Source+Sans+3:wght@350;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <meta name="color-scheme" content="dark" />
   </head>
 
   <body>
-    <main style="max-width:980px;margin:48px auto;padding:0 20px;color:#fff;">
-      <a href="/" style="color:#bbb;text-decoration:none;">← Back</a>
+    <div class="bg">
+      <div class="vignette"></div>
+      <div class="grain"></div>
+    </div>
 
-      <h1 style="margin:14px 0 18px;">Categories</h1>
+    <main class="wrap">
+      <header class="top">
+        <a class="brand" href="/">Bryan Nelson</a>
 
-      <div style="display:flex;flex-wrap:wrap;gap:10px;">
-        {CATEGORY_ORDER.map((c) => (
-          <a
-            href={`/categories/${encodeURIComponent(c)}`}
-            style="border:1px solid #222;background:#0f0f0f;color:#ddd;padding:10px 12px;border-radius:999px;text-decoration:none;"
-          >
-            {c}
-          </a>
-        ))}
-      </div>
+        <nav class="nav" aria-label="Primary navigation">
+          <a class="navLink" href="/about">About</a>
+          <a class="navLink active" href="/categories" aria-current="page">Browse Films</a>
+          <a class="navLink" href="/contact">Contact</a>
+        </nav>
+      </header>
+
+      <section class="panel">
+        <div class="panelHead">
+          <h1>Browse Films</h1>
+          <p class="lead">Choose a category to view all films within it.</p>
+        </div>
+
+        <div class="catGrid">
+          {CATEGORY_ORDER.map((c) => (
+            <a class="catCard" href={`/categories/${categoryToSlug(c)}`}>
+              <div class="catTitle">{c}</div>
+              <div class="catCount">
+                {countForCategory(c)} film{countForCategory(c) === 1 ? "" : "s"}
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="footerLine"></div>
+        <div class="footerInner">
+          <div>
+            <div class="footerName">Bryan Nelson</div>
+            <div class="footerSub">Founder, Catachresis Productions</div>
+          </div>
+
+          <div class="footerLinks">
+            <a href="/about">About</a>
+            <a href="/categories" aria-current="page">Browse Films</a>
+            <a href="/contact">Contact</a>
+          </div>
+        </div>
+      </footer>
     </main>
 
     <style>
-      :global(body){
-        margin:0;
-        background:#070707;
-        font-family:ui-sans-serif,system-ui;
+      :global(body){margin:0;color:#fff;font-family:"Source Sans 3", ui-sans-serif, system-ui;background:#141414}
+      h1,h2,.brand,.footerName{font-family:"Manrope", system-ui}
+
+      .bg{position:fixed;inset:0;z-index:-1;background:#141414}
+      .vignette{
+        position:absolute;inset:-40px;
+        background:
+          radial-gradient(1100px 540px at 20% 10%, rgba(255,215,0,0.05), transparent 55%),
+          radial-gradient(900px 500px at 90% 20%, rgba(80,170,255,0.04), transparent 55%),
+          radial-gradient(1200px 900px at 50% 70%, rgba(255,255,255,0.02), transparent 60%),
+          radial-gradient(ellipse at center, rgba(0,0,0,0) 35%, rgba(0,0,0,0.60) 100%);
+      }
+      .grain{
+        position:absolute;inset:0;
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+        opacity:.075; mix-blend-mode:overlay; pointer-events:none;
+      }
+
+      .wrap{max-width:980px;margin:54px auto;padding:0 20px}
+
+      .top{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0 22px}
+      .brand{color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem}
+      .nav{display:flex;gap:12px;flex-wrap:wrap}
+      .navLink{
+        color:rgba(255,255,255,0.75);
+        text-decoration:none;
+        border-bottom:1px solid rgba(255,255,255,0.16);
+        padding-bottom:2px;
+      }
+      .navLink:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.32)}
+      .navLink.active{color:#fff;border-bottom-color:rgba(255,215,0,0.45)}
+
+      .panel{
+        border:1px solid rgba(255,255,255,0.08);
+        border-radius:16px;
+        background: linear-gradient(180deg, rgba(12,12,12,0.95), rgba(8,8,8,0.85));
+        box-shadow: 0 18px 40px rgba(0,0,0,0.38);
+        padding:18px 16px;
+      }
+      .panelHead{padding:6px 8px 16px}
+      h1{margin:0;font-size:2rem;letter-spacing:-0.01em}
+      .lead{margin:10px 0 0;color:rgba(255,255,255,0.70);line-height:1.6}
+
+      .catGrid{display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;padding:0 8px 10px}
+      .catCard{
+        display:block;text-decoration:none;color:inherit;
+        border:1px solid rgba(255,255,255,0.10);
+        border-radius:14px;
+        background: linear-gradient(180deg, rgba(16,16,16,0.92), rgba(10,10,10,0.86));
+        padding:14px;
+        transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+      }
+      .catCard:hover{
+        transform:translateY(-2px);
+        border-color:rgba(255,255,255,0.16);
+        box-shadow:0 18px 34px rgba(0,0,0,0.45);
+      }
+      .catTitle{font-weight:700}
+      .catCount{margin-top:6px;color:rgba(255,255,255,0.62);font-size:.95rem}
+
+      .footer{margin:26px 0 10px}
+      .footerLine{
+        height:3px;margin:26px 0 18px;border-radius:99px;
+        background: linear-gradient(90deg, rgba(20,20,20,0), rgba(255,255,255,0.20), rgba(20,20,20,0));
+        box-shadow: 0 0 26px rgba(255,255,255,0.08);
+      }
+      .footerInner{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap}
+      .footerName{font-weight:700}
+      .footerSub{color:rgba(255,255,255,0.58);margin-top:4px}
+      .footerLinks{display:flex;gap:14px;flex-wrap:wrap}
+      .footerLinks a{
+        color:rgba(255,255,255,0.72);
+        text-decoration:none;
+        border-bottom:1px solid rgba(255,255,255,0.16);
+        padding-bottom:2px;
+      }
+      .footerLinks a:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.30)}
+
+      @media (max-width: 760px){
+        .catGrid{grid-template-columns:1fr}
       }
     </style>
   </body>

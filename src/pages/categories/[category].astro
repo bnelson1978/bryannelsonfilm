@@ -1,7 +1,32 @@
 ---
 import { getCollection } from "astro:content";
 
+/** Canonical category display names */
+const CATEGORY_ORDER = [
+  "Human Interest",
+  "Space & Astronomy",
+  "Health Sciences",
+  "Arts & Culture",
+  "Nature & Environment",
+  "Education",
+  "Innovation & Technology",
+  "New Frontiers",
+];
+
+function categoryToSlug(category: string) {
+  return category
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+const SLUG_TO_CATEGORY: Record<string, string> = Object.fromEntries(
+  CATEGORY_ORDER.map((c) => [categoryToSlug(c), c])
+);
+
 export async function getStaticPaths() {
+  // Define categories INSIDE the function to avoid scope issues
   const categories = [
     "Human Interest",
     "Space & Astronomy",
@@ -10,47 +35,33 @@ export async function getStaticPaths() {
     "Nature & Environment",
     "Education",
     "Innovation & Technology",
+    "New Frontiers",
   ];
 
-  return categories.map((category) => ({
-    params: { category },
+  return categories.map((c) => ({
+    params: { category: categoryToSlug(c) },
   }));
 }
 
-const category = Astro.params.category;
-
 const films = await getCollection("films");
-const filtered = films.filter((f) => f.data.categories.includes(category));
 
-// Sort: manual order for that category (ascending). Missing => bottom.
-// Tie-breakers: year desc, then title.
-const ordered = filtered.sort((a, b) => {
-  const ao = a.data.categoryOrder?.[category] ?? 999999;
-  const bo = b.data.categoryOrder?.[category] ?? 999999;
-  if (ao !== bo) return ao - bo;
+const slug = Astro.params.category ?? "";
+const category = SLUG_TO_CATEGORY[slug] ?? null;
 
-  const ay = a.data.year ?? 0;
-  const by = b.data.year ?? 0;
-  if (ay !== by) return by - ay;
+const matches = category
+  ? films
+      .filter((f) => Array.isArray(f.data.categories) && f.data.categories.includes(category))
+      .sort((a, b) => {
+        const ay = a.data.year ?? 0;
+        const by = b.data.year ?? 0;
+        if (ay !== by) return by - ay;
+        return a.data.title.localeCompare(b.data.title);
+      })
+  : [];
 
-  return a.data.title.localeCompare(b.data.title);
-});
-
-function getEmbedUrl(platform, videoId) {
-  return platform === "youtube"
-    ? `https://www.youtube-nocookie.com/embed/${videoId}`
-    : `https://player.vimeo.com/video/${videoId}`;
-}
-
-function normalizeAwards(film) {
-  // Support both old award: string and new awards: string[]
-  const list = film.data.awards ?? (film.data.award ? [film.data.award] : []);
-  return Array.isArray(list) ? list : [];
-}
-
-function awardClass(a) {
-  if (typeof a !== "string") return "awardEmmy";
-  return a.toLowerCase().includes("murrow") ? "awardMurrow" : "awardEmmy";
+function embedUrl(film: any) {
+  if (film.data.platform === "youtube") return `https://www.youtube.com/embed/${film.data.videoId}`;
+  return `https://player.vimeo.com/video/${film.data.videoId}`;
 }
 ---
 
@@ -58,91 +69,209 @@ function awardClass(a) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>{category}</title>
-  </head>
-  <body>
-    <main class="wrap">
-      <a href="/categories" class="back">← Back</a>
+    <title>{category ? `${category} — Browse Films` : "Browse Films — Bryan Nelson"}</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Source+Sans+3:wght@350;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <meta name="color-scheme" content="dark" />
+  </head>
+
+  <body>
+    <div class="bg">
+      <div class="vignette"></div>
+      <div class="grain"></div>
+    </div>
+
+    <main class="wrap">
       <header class="top">
-        <h1>{category}</h1>
-        <p class="count">{ordered.length} film{ordered.length === 1 ? "" : "s"}</p>
+        <a class="brand" href="/">Bryan Nelson</a>
+
+        <nav class="nav" aria-label="Primary navigation">
+          <a class="navLink" href="/about">About</a>
+          <a class="navLink active" href="/categories">Browse Films</a>
+          <a class="navLink" href="/contact">Contact</a>
+        </nav>
       </header>
 
-      <section class="list">
-        {ordered.map((film) => {
-          const embedUrl = getEmbedUrl(film.data.platform, film.data.videoId);
-          const awards = normalizeAwards(film);
+      <section class="panel">
+        <div class="panelHead">
+          <div class="crumbs">
+            <a href="/categories">Browse Films</a>
+            <span>›</span>
+            <span aria-current="page">{category ?? slug}</span>
+          </div>
 
-          return (
-            <article class="item">
-              <div class="itemHead">
-                <div>
-                  <h2 class="title">{film.data.title}</h2>
+          <h1>{category ?? slug}</h1>
+          <p class="lead">
+            {category
+              ? `${matches.length} film${matches.length === 1 ? "" : "s"} in this category.`
+              : "Unknown category."}
+          </p>
+        </div>
 
-                  <div class="meta">
-                    {film.data.year ? <span>{film.data.year}</span> : null}
-                    {awards.length ? (
-                      <span>
-                        {awards.map((a) => (
-                          <span class={awardClass(a)}> • 🏆 {a}</span>
-                        ))}
-                      </span>
-                    ) : null}
-                  </div>
+        {category && matches.length ? (
+          <div class="stack">
+            {matches.map((film) => (
+              <article class="filmBlock">
+                <div class="player">
+                  <iframe
+                    src={embedUrl(film)}
+                    title={film.data.title}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                  ></iframe>
                 </div>
 
-                {(film.data.featured || film.data.home) ? (
-                  <a class="open" href={`/films/${film.slug}`}>Open page</a>
-                ) : null}
-              </div>
+                <div class="meta">
+                  <div class="titleRow">
+                    <h2>{film.data.title}</h2>
+                    {film.data.year ? <span class="year">{film.data.year}</span> : null}
+                  </div>
 
-              <div class="player">
-                <iframe
-                  src={embedUrl}
-                  title={film.data.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen
-                />
-              </div>
+                  <div class="cats">
+                    {film.data.categories.map((c) => (
+                      <a class="pill" href={`/categories/${categoryToSlug(c)}`}>{c}</a>
+                    ))}
+                  </div>
 
-              {film.body ? (
-                <div class="desc" set:html={film.body} />
-              ) : (film.data.logline ? (
-                <p class="desc">{film.data.logline}</p>
-              ) : null)}
-            </article>
-          );
-        })}
+                  <div class="desc">
+                    {film.body ? <div set:html={film.body} /> : null}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : category ? (
+          <p class="muted">No films found for this category yet.</p>
+        ) : (
+          <p class="muted">
+            That category link isn’t recognized. Go back to{" "}
+            <a class="inline" href="/categories">Browse Films</a>.
+          </p>
+        )}
       </section>
+
+      <footer class="footer">
+        <div class="footerLine"></div>
+        <div class="footerInner">
+          <div>
+            <div class="footerName">Bryan Nelson</div>
+            <div class="footerSub">Founder, Catachresis Productions</div>
+          </div>
+
+          <div class="footerLinks">
+            <a href="/about">About</a>
+            <a href="/categories">Browse Films</a>
+            <a href="/contact">Contact</a>
+          </div>
+        </div>
+      </footer>
     </main>
 
     <style>
-      :global(body){margin:0;background:#070707;color:#fff;font-family:ui-sans-serif,system-ui}
-      .wrap{max-width:980px;margin:48px auto;padding:0 20px}
-      .back{color:#bbb;text-decoration:none}
-      .top{margin:14px 0 22px}
-      h1{margin:0 0 6px;font-size:2rem}
-      .count{margin:0;color:#bbb}
+      :global(body){margin:0;color:#fff;font-family:"Source Sans 3", ui-sans-serif, system-ui;background:#141414}
+      h1,h2,.brand,.footerName{font-family:"Manrope", system-ui}
 
-      .list{display:flex;flex-direction:column;gap:28px}
+      .bg{position:fixed;inset:0;z-index:-1;background:#141414}
+      .vignette{
+        position:absolute;inset:-40px;
+        background:
+          radial-gradient(1100px 540px at 20% 10%, rgba(255,215,0,0.05), transparent 55%),
+          radial-gradient(900px 500px at 90% 20%, rgba(80,170,255,0.04), transparent 55%),
+          radial-gradient(1200px 900px at 50% 70%, rgba(255,255,255,0.02), transparent 60%),
+          radial-gradient(ellipse at center, rgba(0,0,0,0) 35%, rgba(0,0,0,0.60) 100%);
+      }
+      .grain{
+        position:absolute;inset:0;
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+        opacity:.075; mix-blend-mode:overlay; pointer-events:none;
+      }
 
-      .item{border:1px solid #151515;background:#0b0b0b}
-      .itemHead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:14px 14px 0}
-      .title{margin:0;font-size:1.25rem}
-      .meta{margin-top:6px;color:#aaa;font-size:.9rem}
+      .wrap{max-width:980px;margin:54px auto;padding:0 20px}
 
-      .awardEmmy{color:#ffd700;font-weight:500}
-      .awardMurrow{color:#4aa3ff;font-weight:500}
+      .top{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0 22px}
+      .brand{color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem}
+      .nav{display:flex;gap:12px;flex-wrap:wrap}
+      .navLink{
+        color:rgba(255,255,255,0.75);
+        text-decoration:none;
+        border-bottom:1px solid rgba(255,255,255,0.16);
+        padding-bottom:2px;
+      }
+      .navLink:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.32)}
+      .navLink.active{color:#fff;border-bottom-color:rgba(255,215,0,0.45)}
 
-      .open{color:#ddd;text-decoration:none;border:1px solid #222;background:#111;padding:8px 10px;border-radius:999px;white-space:nowrap}
+      .panel{
+        border:1px solid rgba(255,255,255,0.08);
+        border-radius:16px;
+        background: linear-gradient(180deg, rgba(12,12,12,0.95), rgba(8,8,8,0.85));
+        box-shadow: 0 18px 40px rgba(0,0,0,0.38);
+        padding:18px 16px;
+      }
+      .panelHead{padding:6px 8px 16px}
 
-      .player{position:relative;padding-top:56.25%;margin:12px 14px 0;background:#111;border-top:1px solid #151515;border-bottom:1px solid #151515}
-      .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+      .crumbs{display:flex;gap:10px;align-items:center;color:rgba(255,255,255,0.60);font-size:.95rem}
+      .crumbs a{color:rgba(255,215,0,0.90);text-decoration:none;border-bottom:1px solid rgba(255,215,0,0.22)}
+      .crumbs a:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.30)}
 
-      .desc{padding:14px;color:#bbb;line-height:1.65}
-      .desc :global(p){margin:0 0 10px}
-      .desc :global(p:last-child){margin-bottom:0}
+      h1{margin:10px 0 0;font-size:2rem;letter-spacing:-0.01em}
+      .lead{margin:10px 0 0;color:rgba(255,255,255,0.70);line-height:1.6}
+
+      .muted{color:rgba(255,255,255,0.62);padding:0 8px 10px}
+      .inline{color:rgba(255,215,0,0.92)}
+
+      .stack{display:flex;flex-direction:column;gap:18px;padding:0 8px 10px}
+
+      .filmBlock{
+        border:1px solid rgba(255,255,255,0.10);
+        border-radius:16px;
+        background: linear-gradient(180deg, rgba(16,16,16,0.92), rgba(10,10,10,0.86));
+        overflow:hidden;
+      }
+      .player{aspect-ratio:16/9;background:#111}
+      iframe{width:100%;height:100%;border:0;display:block}
+
+      .meta{padding:14px}
+      .titleRow{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+      h2{margin:0;font-size:1.25rem}
+      .year{color:rgba(255,255,255,0.60)}
+
+      .cats{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+      .pill{
+        display:inline-flex;align-items:center;
+        padding:8px 12px;border-radius:999px;
+        border:1px solid rgba(255,255,255,0.10);
+        background: rgba(0,0,0,0.20);
+        color:rgba(255,255,255,0.86);
+        text-decoration:none;
+        transition:transform .16s ease, border-color .16s ease;
+      }
+      .pill:hover{transform:translateY(-1px);border-color:rgba(255,255,255,0.18);color:#fff}
+
+      .desc :global(p){color:rgba(255,255,255,0.70);line-height:1.7;margin:12px 0 0}
+
+      .footer{margin:26px 0 10px}
+      .footerLine{
+        height:3px;margin:26px 0 18px;border-radius:99px;
+        background: linear-gradient(90deg, rgba(20,20,20,0), rgba(255,255,255,0.20), rgba(20,20,20,0));
+        box-shadow: 0 0 26px rgba(255,255,255,0.08);
+      }
+      .footerInner{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap}
+      .footerName{font-weight:700}
+      .footerSub{color:rgba(255,255,255,0.58);margin-top:4px}
+      .footerLinks{display:flex;gap:14px;flex-wrap:wrap}
+      .footerLinks a{
+        color:rgba(255,255,255,0.72);
+        text-decoration:none;
+        border-bottom:1px solid rgba(255,255,255,0.16);
+        padding-bottom:2px;
+      }
+      .footerLinks a:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.30)}
     </style>
   </body>
 </html>
