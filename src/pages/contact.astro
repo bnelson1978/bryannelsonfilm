@@ -1,6 +1,7 @@
 ---
 const SITE_EMAIL = "bnelson78@gmail.com";
 const PAGE_TITLE = "Contact — Bryan Nelson";
+const FACEBOOK_URL = "https://www.facebook.com/catachresisproductions";
 ---
 
 <html lang="en">
@@ -28,7 +29,7 @@ const PAGE_TITLE = "Contact — Bryan Nelson";
       <header class="top">
         <a class="brand" href="/">Bryan Nelson</a>
 
-        <nav class="nav">
+        <nav class="nav" aria-label="Primary navigation">
           <a class="navLink" href="/about">About</a>
           <a class="navLink" href="/categories">Browse Films</a>
           <a class="navLink active" href="/contact">Contact</a>
@@ -44,7 +45,7 @@ const PAGE_TITLE = "Contact — Bryan Nelson";
         </div>
 
         <div class="grid">
-          <!-- FORM -->
+          <!-- Netlify Form -->
           <form
             class="form"
             name="contact"
@@ -53,32 +54,44 @@ const PAGE_TITLE = "Contact — Bryan Nelson";
             data-netlify="true"
             netlify-honeypot="bot-field"
           >
+            <!-- Netlify required -->
             <input type="hidden" name="form-name" value="contact" />
 
-            <p class="hidden">
-              <label>Don’t fill this out: <input name="bot-field" /></label>
-            </p>
+            <!-- Honeypot (ALWAYS hidden; no visible label) -->
+            <div hidden style="display:none;">
+              <input name="bot-field" tabindex="-1" autocomplete="off" />
+            </div>
 
             <div class="row2">
               <label class="field">
                 <span class="label">Name</span>
-                <input name="name" type="text" required />
+                <input name="name" type="text" autocomplete="name" required />
               </label>
 
               <label class="field">
                 <span class="label">Email</span>
-                <input name="email" type="email" required />
+                <input name="email" type="email" autocomplete="email" required />
               </label>
             </div>
 
             <label class="field">
               <span class="label">Subject</span>
-              <input name="subject" type="text" required />
+              <input
+                name="subject"
+                type="text"
+                placeholder="Commission / collaboration / speaking / screening…"
+                required
+              />
             </label>
 
             <label class="field">
               <span class="label">Message</span>
-              <textarea name="message" rows="7" required></textarea>
+              <textarea
+                name="message"
+                rows="7"
+                placeholder="Tell me what you’re working on, timeline, and any relevant links."
+                required
+              ></textarea>
             </label>
 
             <div class="actions">
@@ -87,7 +100,7 @@ const PAGE_TITLE = "Contact — Bryan Nelson";
             </div>
           </form>
 
-          <!-- DIRECT CONTACT -->
+          <!-- Side info -->
           <aside class="aside">
             <div class="asideCard">
               <h2>Direct</h2>
@@ -111,7 +124,7 @@ const PAGE_TITLE = "Contact — Bryan Nelson";
               <div class="kv">
                 <div class="k">Facebook</div>
                 <div class="v">
-                  <a href="https://www.facebook.com/catachresisproductions" target="_blank">
+                  <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">
                     Catachresis Productions
                   </a>
                 </div>
@@ -132,7 +145,7 @@ const PAGE_TITLE = "Contact — Bryan Nelson";
           <div class="footerLinks">
             <a href="/about">About</a>
             <a href="/categories">Browse Films</a>
-            <a href="/contact">Contact</a>
+            <a href="/contact" aria-current="page">Contact</a>
           </div>
         </div>
       </footer>
@@ -141,64 +154,156 @@ const PAGE_TITLE = "Contact — Bryan Nelson";
     <style>
       :global(body){
         margin:0;
-        background:#141414;
         color:#fff;
-        font-family:"Source Sans 3", system-ui;
+        font-family:"Source Sans 3", ui-sans-serif, system-ui;
+        background:#141414;
       }
-      h1,h2,.brand{font-family:"Manrope", system-ui}
+      h1,h2,.brand,.footerName{font-family:"Manrope", system-ui}
+
+      /* Background */
+      .bg{position:fixed;inset:0;z-index:-1;background:#141414}
+      .vignette{
+        position:absolute;inset:-40px;
+        background:
+          radial-gradient(1100px 540px at 20% 10%, rgba(255,215,0,0.05), transparent 55%),
+          radial-gradient(900px 500px at 90% 20%, rgba(80,170,255,0.04), transparent 55%),
+          radial-gradient(1200px 900px at 50% 70%, rgba(255,255,255,0.02), transparent 60%),
+          radial-gradient(ellipse at center, rgba(0,0,0,0) 35%, rgba(0,0,0,0.60) 100%);
+      }
+      .grain{
+        position:absolute;inset:0;
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+        opacity:.075; mix-blend-mode:overlay; pointer-events:none;
+      }
 
       .wrap{max-width:980px;margin:54px auto;padding:0 20px}
 
-      .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-      .nav{display:flex;gap:12px}
-      .navLink{color:#bbb;text-decoration:none}
-      .navLink.active{color:#fff}
+      /* Top nav */
+      .top{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0 22px}
+      .brand{color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem}
+      .nav{display:flex;gap:12px;flex-wrap:wrap}
+      .navLink{
+        color:rgba(255,255,255,0.75);
+        text-decoration:none;
+        border-bottom:1px solid rgba(255,255,255,0.16);
+        padding-bottom:2px;
+      }
+      .navLink:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.32)}
+      .navLink.active{color:#fff;border-bottom-color:rgba(255,215,0,0.45)}
 
+      /* Panel */
       .panel{
         border:1px solid rgba(255,255,255,0.08);
         border-radius:16px;
-        padding:18px;
-        background:linear-gradient(180deg,rgba(12,12,12,.95),rgba(8,8,8,.85));
+        background: linear-gradient(180deg, rgba(12,12,12,0.95), rgba(8,8,8,0.85));
+        box-shadow: 0 18px 40px rgba(0,0,0,0.38);
+        padding:18px 16px;
       }
+      .panelHead{padding:6px 8px 16px}
+      h1{margin:0;font-size:2rem;letter-spacing:-0.01em}
+      .lead{margin:10px 0 0;color:rgba(255,255,255,0.70);line-height:1.6}
 
-      .grid{display:grid;grid-template-columns:1.3fr .7fr;gap:18px}
-      .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+      .grid{display:grid;grid-template-columns:1.3fr 0.7fr;gap:18px;align-items:start}
 
-      input,textarea{
-        width:100%;
-        border-radius:10px;
-        border:1px solid rgba(255,255,255,.15);
-        background:#111;
-        color:#fff;
-        padding:10px;
-      }
-
-      .btn.primary{
-        background:linear-gradient(180deg,rgba(255,215,0,.18),rgba(20,20,20,.8));
-        border:1px solid rgba(255,215,0,.3);
-        border-radius:999px;
-        padding:10px 16px;
-        color:#fff;
-        cursor:pointer;
-      }
-
-      .asideCard{
-        border:1px solid rgba(255,255,255,.08);
+      /* Form */
+      .form{
+        border:1px solid rgba(255,255,255,0.08);
         border-radius:14px;
+        background: linear-gradient(180deg, rgba(16,16,16,0.92), rgba(10,10,10,0.86));
         padding:14px;
-        background:linear-gradient(180deg,rgba(16,16,16,.9),rgba(10,10,10,.85));
+      }
+      .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+      .field{display:block;margin:10px 0}
+      .label{display:block;font-weight:600;margin:0 0 6px;color:rgba(255,255,255,0.82)}
+      input, textarea{
+        width:100%;
+        box-sizing:border-box;
+        border-radius:12px;
+        border:1px solid rgba(255,255,255,0.12);
+        background:rgba(12,12,12,0.85);
+        color:#fff;
+        padding:10px 12px;
+        font: inherit;
+        outline:none;
+        transition:border-color .16s ease, box-shadow .16s ease;
+      }
+      input:focus, textarea:focus{
+        border-color:rgba(255,215,0,0.35);
+        box-shadow:0 0 0 4px rgba(255,215,0,0.10);
+      }
+      textarea{resize:vertical;min-height:140px}
+
+      .actions{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+      .btn{
+        border:1px solid rgba(255,255,255,0.12);
+        padding:10px 14px;border-radius:999px;
+        color:#fff;background:rgba(18,18,18,0.65);
+        cursor:pointer;
+        transition:transform .18s ease, background .18s ease, border-color .18s ease;
+      }
+      .btn:hover{transform:translateY(-2px);background:rgba(26,26,26,0.85);border-color:rgba(255,255,255,0.18)}
+      .btn.primary{
+        position:relative;
+        background:linear-gradient(180deg, rgba(255,215,0,0.18), rgba(20,20,20,0.80));
+        border-color:rgba(255,215,0,0.26);
+        overflow:hidden;
+        font-weight:700;
+      }
+      .btn.primary::after{
+        content:"";
+        position:absolute;inset:-40%;
+        background:linear-gradient(90deg, transparent, rgba(255,215,0,0.22), transparent);
+        transform:translateX(-60%) rotate(18deg);
+        animation: shimmer 2.9s ease-in-out infinite;
+        pointer-events:none;
+      }
+      @keyframes shimmer{
+        0%{transform:translateX(-60%) rotate(18deg)}
+        55%{transform:translateX(80%) rotate(18deg)}
+        100%{transform:translateX(80%) rotate(18deg)}
+      }
+      @media (prefers-reduced-motion: reduce){
+        .btn.primary::after{animation:none}
       }
 
-      .kv{display:grid;grid-template-columns:80px 1fr;gap:10px;margin:10px 0}
-      .k{color:#aaa}
-      .v a{color:#ffd700;text-decoration:none}
+      .note{color:rgba(255,255,255,0.55);font-size:.95rem}
 
-      .footer{margin-top:24px}
-      .footerLine{height:2px;background:rgba(255,255,255,.15);margin-bottom:14px}
-      .footerInner{display:flex;justify-content:space-between}
-      .footerLinks{display:flex;gap:12px}
+      /* Aside */
+      .aside{display:flex;flex-direction:column;gap:12px}
+      .asideCard{
+        border:1px solid rgba(255,255,255,0.08);
+        border-radius:14px;
+        background: linear-gradient(180deg, rgba(16,16,16,0.92), rgba(10,10,10,0.86));
+        padding:14px;
+      }
+      .asideCard h2{margin:0 0 10px;font-size:1.05rem}
+      .kv{display:grid;grid-template-columns:88px 1fr;gap:10px;margin:10px 0}
+      .k{color:rgba(255,255,255,0.55)}
+      .v a{color:rgba(255,215,0,0.92);text-decoration:none;border-bottom:1px solid rgba(255,215,0,0.25)}
+      .v a:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.30)}
 
-      @media(max-width:800px){
+      /* Footer */
+      .footer{margin:26px 0 10px}
+      .footerLine{
+        height:3px;
+        margin:26px 0 18px;
+        background: linear-gradient(90deg, rgba(20,20,20,0), rgba(255,255,255,0.20), rgba(20,20,20,0));
+        box-shadow: 0 0 26px rgba(255,255,255,0.08);
+        border-radius:99px;
+      }
+      .footerInner{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap}
+      .footerName{font-weight:700}
+      .footerSub{color:rgba(255,255,255,0.58);margin-top:4px}
+      .footerLinks{display:flex;gap:14px;flex-wrap:wrap}
+      .footerLinks a{
+        color:rgba(255,255,255,0.72);
+        text-decoration:none;
+        border-bottom:1px solid rgba(255,255,255,0.16);
+        padding-bottom:2px;
+      }
+      .footerLinks a:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.30)}
+
+      @media (max-width: 860px){
         .grid{grid-template-columns:1fr}
         .row2{grid-template-columns:1fr}
       }
