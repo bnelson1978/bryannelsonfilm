@@ -4,7 +4,7 @@ year: 2018
 categories: ["Arts & Culture", "Nature & Environment"]
 homeSections: ["independent-originals"]
 homeSectionOrder:
-  independent-originals: 2
+  independent-originals: 3
 platform: "youtube"
 videoId: "MhdtQA04dqM"
 thumbnail: "/images/films/transforming-agave.jpg"

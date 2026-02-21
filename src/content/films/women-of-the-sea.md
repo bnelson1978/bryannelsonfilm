@@ -1,7 +1,7 @@
 ---
 title: "Women of the Sea (Mujeres del Mar)"
 year: 2020
-categories: ["Nature & Environment"]
+categories: ["Nature & Environment", "Arts & Culture", "Human Interest"]
 homeSections: ["independent-originals"]
 homeSectionOrder:
   independent-originals: 1

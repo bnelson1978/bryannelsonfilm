@@ -1,10 +1,10 @@
 ---
 title: "Niqi"
 year: 2016
-categories: ["Arts & Culture"]
+categories: ["Arts & Culture", "Human Interest"]
 homeSections: ["independent-originals"]
 homeSectionOrder:
-  independent-originals: 3
+  independent-originals: 2
 platform: "youtube"
 videoId: "dSl8BL67ejc"
 thumbnail: "/images/films/niqi.png"
