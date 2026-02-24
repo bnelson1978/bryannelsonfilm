@@ -1,5 +1,5 @@
 ---
-title: "FRESH Porject"
+title: "FRESH Project"
 year: 2025
 categories: ["Health Sciences"]
 platform: "youtube"

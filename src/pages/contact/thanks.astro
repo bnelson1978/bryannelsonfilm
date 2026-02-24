@@ -11,40 +11,142 @@ const PAGE_TITLE = "Thanks — Bryan Nelson";
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Source+Sans+3:wght@350;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Source+Sans+3:wght@350;400;500;600&display=swap"
       rel="stylesheet"
     />
     <meta name="color-scheme" content="dark" />
   </head>
 
   <body>
+    <div class="bg">
+      <div class="vignette"></div>
+      <div class="grain"></div>
+    </div>
+
     <main class="wrap">
-      <div class="card">
-        <h1>Message sent.</h1>
-        <p>Thanks—your note came through. I’ll respond as soon as I can.</p>
-        <a class="btn" href="/">Back to home</a>
-      </div>
+      <header class="top">
+        <a class="brand" href="/">Bryan Nelson</a>
+
+        <nav class="nav" aria-label="Primary navigation">
+          <a class="navLink" href="/">Home</a>
+          <a class="navLink" href="/about">About</a>
+          <a class="navLink" href="/categories">Browse Films</a>
+          <a class="navLink" href="/contact">Contact</a>
+        </nav>
+      </header>
+
+      <section class="panel">
+        <div class="card">
+          <h1>Message sent.</h1>
+          <p>Thanks—your note came through. I’ll respond as soon as I can.</p>
+
+          <div class="actions">
+            <a class="btn primary" href="/">Back to home</a>
+            <a class="btn ghost" href="/categories">Browse films</a>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="footerLine"></div>
+        <div class="footerInner">
+          <div>
+            <div class="footerName">Bryan Nelson</div>
+            <div class="footerSub">Founder, Catachresis Productions</div>
+          </div>
+
+          <div class="footerLinks">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/categories">Browse Films</a>
+            <a href="/contact">Contact</a>
+          </div>
+        </div>
+      </footer>
     </main>
 
     <style>
-      :global(body){margin:0;background:#141414;color:#fff;font-family:"Source Sans 3",ui-sans-serif,system-ui}
-      h1{font-family:"Manrope",system-ui;margin:0 0 10px}
-      .wrap{max-width:760px;margin:90px auto;padding:0 20px}
-      .card{
-        border:1px solid rgba(255,255,255,0.10);
+      :global(body){margin:0;color:#fff;font-family:"Source Sans 3", ui-sans-serif, system-ui;background:#141414}
+      h1,h2,.brand,.footerName{font-family:"Manrope", system-ui}
+
+      /* Background */
+      .bg{position:fixed;inset:0;z-index:-1;background:#141414}
+      .vignette{
+        position:absolute;inset:-40px;
+        background:
+          radial-gradient(1100px 540px at 20% 10%, rgba(255,215,0,0.05), transparent 55%),
+          radial-gradient(900px 500px at 90% 20%, rgba(80,170,255,0.04), transparent 55%),
+          radial-gradient(1200px 900px at 50% 70%, rgba(255,255,255,0.02), transparent 60%),
+          radial-gradient(ellipse at center, rgba(0,0,0,0) 35%, rgba(0,0,0,0.60) 100%);
+      }
+      .grain{
+        position:absolute;inset:0;
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+        opacity:.075; mix-blend-mode:overlay; pointer-events:none;
+      }
+
+      .wrap{max-width:980px;margin:54px auto;padding:0 20px}
+
+      /* Top nav */
+      .top{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0 22px}
+      .brand{color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem}
+      .nav{display:flex;gap:12px;flex-wrap:wrap}
+      .navLink{
+        color:rgba(255,255,255,0.75);
+        text-decoration:none;
+        border-bottom:1px solid rgba(255,255,255,0.16);
+        padding-bottom:2px;
+      }
+      .navLink:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.32)}
+
+      /* Panel */
+      .panel{
+        border:1px solid rgba(255,255,255,0.08);
         border-radius:16px;
         background: linear-gradient(180deg, rgba(12,12,12,0.95), rgba(8,8,8,0.85));
-        padding:22px;
-        box-shadow:0 18px 40px rgba(0,0,0,0.38);
+        box-shadow: 0 18px 40px rgba(0,0,0,0.38);
+        padding:18px 16px;
       }
+
+      .card{padding:14px 10px 10px}
+      h1{margin:0 0 10px;font-size:2rem;letter-spacing:-0.01em}
       p{color:rgba(255,255,255,0.72);line-height:1.6;margin:0 0 18px}
+
+      .actions{display:flex;gap:10px;flex-wrap:wrap}
       .btn{
-        display:inline-block;
+        display:inline-flex;align-items:center;justify-content:center;
         padding:10px 14px;border-radius:999px;
-        border:1px solid rgba(255,215,0,0.26);
-        background:linear-gradient(180deg, rgba(255,215,0,0.18), rgba(20,20,20,0.80));
-        color:#fff;text-decoration:none;font-weight:700;
+        border:1px solid rgba(255,255,255,0.12);
+        color:#fff;text-decoration:none;
+        background:rgba(18,18,18,0.65);
+        transition:transform .18s ease, background .18s ease, border-color .18s ease;
       }
+      .btn:hover{transform:translateY(-2px);background:rgba(26,26,26,0.85);border-color:rgba(255,255,255,0.18)}
+      .btn.ghost{background:transparent;color:rgba(255,255,255,0.82)}
+      .btn.primary{
+        background:linear-gradient(180deg, rgba(255,215,0,0.18), rgba(20,20,20,0.80));
+        border-color:rgba(255,215,0,0.26);
+        font-weight:700;
+      }
+
+      /* Footer */
+      .footer{margin:26px 0 10px}
+      .footerLine{
+        height:3px;margin:26px 0 18px;border-radius:99px;
+        background: linear-gradient(90deg, rgba(20,20,20,0), rgba(255,255,255,0.20), rgba(20,20,20,0));
+        box-shadow: 0 0 26px rgba(255,255,255,0.08);
+      }
+      .footerInner{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap}
+      .footerName{font-weight:700}
+      .footerSub{color:rgba(255,255,255,0.58);margin-top:4px}
+      .footerLinks{display:flex;gap:14px;flex-wrap:wrap}
+      .footerLinks a{
+        color:rgba(255,255,255,0.72);
+        text-decoration:none;
+        border-bottom:1px solid rgba(255,255,255,0.16);
+        padding-bottom:2px;
+      }
+      .footerLinks a:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.30)}
     </style>
   </body>
 </html>

@@ -6,7 +6,7 @@ awards:
   - "Emmy Award Winner"
   - "Edward R. Murrow Award Winner"
 home: true
-homeOrder: 4
+homeOrder: 2
 platform: "youtube"
 videoId: "qigC4yWaSeM"
 thumbnail: "/images/films/footprints-from-the-past.png"

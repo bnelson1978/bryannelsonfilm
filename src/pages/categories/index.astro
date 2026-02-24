@@ -14,7 +14,6 @@ const CATEGORY_ORDER = [
 
 const films = await getCollection("films");
 
-// Make URL-safe slugs for category routes
 function categoryToSlug(category: string) {
   return category
     .toLowerCase()
@@ -26,6 +25,8 @@ function categoryToSlug(category: string) {
 function countForCategory(category: string) {
   return films.filter((f) => Array.isArray(f.data.categories) && f.data.categories.includes(category)).length;
 }
+
+const totalFilms = films.length;
 ---
 
 <html lang="en">
@@ -54,6 +55,7 @@ function countForCategory(category: string) {
         <a class="brand" href="/">Bryan Nelson</a>
 
         <nav class="nav" aria-label="Primary navigation">
+          <a class="navLink" href="/">Home</a>
           <a class="navLink" href="/about">About</a>
           <a class="navLink active" href="/categories" aria-current="page">Browse Films</a>
           <a class="navLink" href="/contact">Contact</a>
@@ -62,19 +64,36 @@ function countForCategory(category: string) {
 
       <section class="panel">
         <div class="panelHead">
-          <h1>Browse Films</h1>
-          <p class="lead">Choose a category to view all films within it.</p>
+          <div class="headLeft">
+            <h1>Browse Films</h1>
+            <p class="lead">Choose a category to view all films within it.</p>
+          </div>
+
+          <div class="stat" aria-label={`${totalFilms} films total`}>
+            <div class="statNum">{totalFilms}</div>
+            <div class="statLabel">Films</div>
+          </div>
         </div>
 
         <div class="catGrid">
-          {CATEGORY_ORDER.map((c) => (
-            <a class="catCard" href={`/categories/${categoryToSlug(c)}`}>
-              <div class="catTitle">{c}</div>
-              <div class="catCount">
-                {countForCategory(c)} film{countForCategory(c) === 1 ? "" : "s"}
-              </div>
-            </a>
-          ))}
+          {CATEGORY_ORDER.map((c) => {
+            const count = countForCategory(c);
+            return (
+              <a class="catCard" href={`/categories/${categoryToSlug(c)}`}>
+                <div class="catTop">
+                  <div class="catTitle">{c}</div>
+                  <div class="catCount">
+                    {count} film{count === 1 ? "" : "s"}
+                  </div>
+                </div>
+
+                <div class="ctaRow">
+                  <span class="ctaText">View category</span>
+                  <span class="chev" aria-hidden="true">›</span>
+                </div>
+              </a>
+            );
+          })}
         </div>
       </section>
 
@@ -87,8 +106,9 @@ function countForCategory(category: string) {
           </div>
 
           <div class="footerLinks">
+            <a href="/">Home</a>
             <a href="/about">About</a>
-            <a href="/categories" aria-current="page">Browse Films</a>
+            <a href="/categories">Browse Films</a>
             <a href="/contact">Contact</a>
           </div>
         </div>
@@ -99,6 +119,7 @@ function countForCategory(category: string) {
       :global(body){margin:0;color:#fff;font-family:"Source Sans 3", ui-sans-serif, system-ui;background:#141414}
       h1,h2,.brand,.footerName{font-family:"Manrope", system-ui}
 
+      /* Background */
       .bg{position:fixed;inset:0;z-index:-1;background:#141414}
       .vignette{
         position:absolute;inset:-40px;
@@ -114,8 +135,9 @@ function countForCategory(category: string) {
         opacity:.075; mix-blend-mode:overlay; pointer-events:none;
       }
 
-      .wrap{max-width:980px;margin:54px auto;padding:0 20px}
+      .wrap{max-width:1120px;margin:54px auto;padding:0 20px}
 
+      /* Top nav */
       .top{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0 22px}
       .brand{color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem}
       .nav{display:flex;gap:12px;flex-wrap:wrap}
@@ -128,34 +150,91 @@ function countForCategory(category: string) {
       .navLink:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.32)}
       .navLink.active{color:#fff;border-bottom-color:rgba(255,215,0,0.45)}
 
+      /* Panel */
       .panel{
         border:1px solid rgba(255,255,255,0.08);
         border-radius:16px;
-        background: linear-gradient(180deg, rgba(12,12,12,0.95), rgba(8,8,8,0.85));
-        box-shadow: 0 18px 40px rgba(0,0,0,0.38);
+        background:linear-gradient(180deg, rgba(12,12,12,0.95), rgba(8,8,8,0.85));
+        box-shadow:0 18px 40px rgba(0,0,0,0.38);
         padding:18px 16px;
       }
-      .panelHead{padding:6px 8px 16px}
+
+      .panelHead{
+        position:relative;
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-end;
+        padding:6px 8px 18px 20px;
+      }
+      .panelHead::before{
+        content:"";
+        position:absolute;
+        left:8px;
+        top:8px;
+        bottom:20px;
+        width:3px;
+        border-radius:99px;
+        background:linear-gradient(180deg, rgba(255,215,0,0.95), rgba(80,170,255,0.70));
+        box-shadow:0 0 18px rgba(255,215,0,0.08);
+      }
+
       h1{margin:0;font-size:2rem;letter-spacing:-0.01em}
       .lead{margin:10px 0 0;color:rgba(255,255,255,0.70);line-height:1.6}
 
-      .catGrid{display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;padding:0 8px 10px}
-      .catCard{
-        display:block;text-decoration:none;color:inherit;
+      .stat{
         border:1px solid rgba(255,255,255,0.10);
         border-radius:14px;
+        padding:10px 14px;
+        text-align:right;
+        background: rgba(0,0,0,0.18);
+      }
+      .statNum{font-family:"Manrope";font-weight:700;font-size:1.2rem}
+      .statLabel{color:rgba(255,255,255,0.60)}
+
+      .catGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:10px 8px}
+
+      .catCard{
+        position:relative;
+        display:block;
+        text-decoration:none;
+        color:inherit;
+        border:1px solid rgba(255,255,255,0.10);
+        border-radius:16px;
+        padding:20px;
         background: linear-gradient(180deg, rgba(16,16,16,0.92), rgba(10,10,10,0.86));
-        padding:14px;
-        transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+        transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+        overflow:hidden;
+      }
+      /* subtle sheen on hover */
+      .catCard::after{
+        content:"";
+        position:absolute;inset:-40%;
+        background:linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+        transform:translateX(-70%) rotate(18deg);
+        transition:transform .35s ease;
+        pointer-events:none;
       }
       .catCard:hover{
         transform:translateY(-2px);
         border-color:rgba(255,255,255,0.16);
         box-shadow:0 18px 34px rgba(0,0,0,0.45);
       }
-      .catTitle{font-weight:700}
-      .catCount{margin-top:6px;color:rgba(255,255,255,0.62);font-size:.95rem}
+      .catCard:hover::after{transform:translateX(90%) rotate(18deg)}
 
+      .catTop{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+      .catTitle{
+        font-family:"Manrope";
+        font-weight:700;
+        font-size:1.7rem;
+        letter-spacing:-0.01em;
+      }
+      .catCount{color:rgba(255,255,255,0.62);white-space:nowrap}
+
+      .ctaRow{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+      .ctaText{color:rgba(255,255,255,0.72)}
+      .chev{color:rgba(255,215,0,0.85);font-size:1.25rem}
+
+      /* Footer */
       .footer{margin:26px 0 10px}
       .footerLine{
         height:3px;margin:26px 0 18px;border-radius:99px;
@@ -174,8 +253,9 @@ function countForCategory(category: string) {
       }
       .footerLinks a:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.30)}
 
-      @media (max-width: 760px){
+      @media (max-width:760px){
         .catGrid{grid-template-columns:1fr}
+        .catCount{white-space:normal}
       }
     </style>
   </body>

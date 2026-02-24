@@ -3,7 +3,7 @@ title: "Reinventing Plastics"
 year: 2024
 categories: ["Innovation & Technology", "Nature & Environment"]
 home: true
-homeOrder: 7
+homeOrder: 6
 platform: "youtube"
 videoId: "w0iKoPThRrQ"
 thumbnail: "/images/films/reinventing-plastics.png"

@@ -19,12 +19,12 @@ const featured = films.find((f) => f.data.featured);
 const homeFilms = films
   .filter((f) => f.data.home)
   .sort((a, b) => {
-  const ao = a.data.homeOrder ?? 9999;
-  const bo = b.data.homeOrder ?? 9999;
-  if (ao !== bo) return ao - bo;
+    const ao = a.data.homeOrder ?? 9999;
+    const bo = b.data.homeOrder ?? 9999;
+    if (ao !== bo) return ao - bo;
 
-  return (b.data.year ?? 0) - (a.data.year ?? 0);
-});
+    return (b.data.year ?? 0) - (a.data.year ?? 0);
+  });
 
 function isMurrow(text) {
   return typeof text === "string" && text.toLowerCase().includes("murrow");
@@ -160,7 +160,9 @@ const FEATURED_BLURB =
       <section class="sectionBlock">
         <div class="sectionHead split">
           <h2 class="sectionTitle sectionTitleLarge">Selected Films</h2>
-          <a class="seeAll" href="/categories">See all</a>
+
+          {/* ✅ CHANGED: See all is now a pill (only here) */}
+          <a class="seeAll seeAllPill" href="/categories">See all</a>
         </div>
 
         <section class="grid">
@@ -304,7 +306,7 @@ const FEATURED_BLURB =
         <div class="sectionHead split">
           <div>
             <h2 class="sectionTitle">New Frontiers: Full Episodes</h2>
-            <div class="mutedSmall">Magazine program I produced featuring University of Arizona stories</div>
+            <div class="mutedSmall">TV show I produced featuring University of Arizona stories</div>
           </div>
           <span class="scrollHint">← scroll →</span>
         </div>
@@ -415,7 +417,6 @@ const FEATURED_BLURB =
 
         <div class="catRow">
           {CATEGORY_ORDER.map((c) => (
-            // ✅ FIX: use slug routing to match /categories/[category].astro
             <a class="catPill" href={`/categories/${categoryToSlug(c)}`}>
               <span class="pillDot"></span>
               {c}
@@ -527,8 +528,32 @@ const FEATURED_BLURB =
       .sectionTitleLarge{font-size:1.55rem}
       .muted{color:#9a9a9a}
       .mutedSmall{color:rgba(255,255,255,0.60);font-size:.95rem}
+
+      /* Existing underline style kept for other 'seeAll' links (like "Browse all") */
       .seeAll{color:rgba(255,255,255,0.72);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.18);padding-bottom:2px}
       .seeAll:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.32)}
+
+      /* ✅ NEW: pill treatment ONLY for Selected Films link */
+      .seeAllPill{
+        display:inline-flex;
+        align-items:center;
+        padding:8px 14px;
+        border-radius:999px;
+        border:1px solid rgba(255,255,255,0.12);
+        background:rgba(18,18,18,0.65);
+        color:rgba(255,255,255,0.88);
+        text-decoration:none;
+        transition:transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
+      }
+      .seeAllPill:hover{
+        transform:translateY(-2px);
+        background:rgba(26,26,26,0.85);
+        border-color:rgba(255,255,255,0.20);
+        color:#fff;
+      }
+      @media (prefers-reduced-motion: reduce){
+        .seeAllPill{transition:none}
+      }
 
       /* Divider */
       .sectionDivider{

@@ -4,7 +4,7 @@ year: 2022
 categories: ["Education", "Arts & Culture"]
 award: "Emmy Award Nominee"
 home: true
-homeOrder: 12
+homeOrder: 11
 homeSections: ["fred-fox"]
 homeSectionOrder:
   fred-fox: 6

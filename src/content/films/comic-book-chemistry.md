@@ -4,7 +4,7 @@ year: 2022
 categories: ["Education", "Arts & Culture"]
 award: "Emmy Award Winner"
 home: true
-homeOrder: 10
+homeOrder: 12
 platform: "youtube"
 videoId: "wDmkJzcm4Pc"
 thumbnail: "/images/films/comic-chemistry.png"

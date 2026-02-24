@@ -13,10 +13,6 @@ const CATEGORY_ORDER = [
   "New Frontiers",
 ];
 
-/**
- * Slugify helper for use in the template + runtime logic.
- * (Keep this at top-level for general use.)
- */
 function categoryToSlug(category: string) {
   return String(category)
     .toLowerCase()
@@ -25,20 +21,12 @@ function categoryToSlug(category: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-/** Slug -> display name lookup */
 const SLUG_TO_CATEGORY: Record<string, string> = Object.fromEntries(
   CATEGORY_ORDER.map((c) => [categoryToSlug(c), c])
 );
 
 export async function getStaticPaths() {
-  // ✅ FIX: define slugify inside getStaticPaths so it’s always in-scope at build time
-  const categoryToSlugLocal = (category: string) =>
-    String(category)
-      .toLowerCase()
-      .replace(/&/g, "and")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
-
+  // ✅ Self-contained to avoid build-scope issues
   const categories = [
     "Human Interest",
     "Space & Astronomy",
@@ -50,8 +38,15 @@ export async function getStaticPaths() {
     "New Frontiers",
   ];
 
+  const toSlug = (category: string) =>
+    String(category)
+      .toLowerCase()
+      .replace(/&/g, "and")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+
   return categories.map((c) => ({
-    params: { category: categoryToSlugLocal(c) },
+    params: { category: toSlug(c) },
   }));
 }
 
@@ -103,10 +98,11 @@ function embedUrl(film: any) {
         <a class="brand" href="/">Bryan Nelson</a>
 
         <nav class="nav" aria-label="Primary navigation">
-          <a class="navLink" href="/about">About</a>
-          <a class="navLink active" href="/categories">Browse Films</a>
-          <a class="navLink" href="/contact">Contact</a>
-        </nav>
+  <a class="navLink" href="/">Home</a>
+  <a class="navLink" href="/about">About</a>
+  <a class="navLink" href="/categories">Browse Films</a>
+  <a class="navLink" href="/contact">Contact</a>
+</nav>
       </header>
 
       <section class="panel">
@@ -128,31 +124,47 @@ function embedUrl(film: any) {
         {category && matches.length ? (
           <div class="stack">
             {matches.map((film) => (
-              <article class="filmBlock">
-                <div class="player">
-                  <iframe
-                    src={embedUrl(film)}
-                    title={film.data.title}
-                    loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen
-                  ></iframe>
+              <article class="filmBlock cardHover">
+                <div class="filmRule" aria-hidden="true"></div>
+
+                {/* Left: meta/copy */}
+                <div class="metaCol">
+                  {/* ✅ HEADER ROW ONLY (bar lives here, cannot reach description) */}
+                  <div class="metaHeader">
+                    <div class="metaBar" aria-hidden="true"></div>
+
+                    <div class="metaTop">
+                      <div class="titleRow">
+                        <h2 class="title">{film.data.title}</h2>
+                        {film.data.year ? <span class="year">{film.data.year}</span> : null}
+                      </div>
+
+                      <div class="cats">
+                        {film.data.categories.map((c) => (
+                          <a class="pill" href={`/categories/${categoryToSlug(c)}`}>{c}</a>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ✅ DESCRIPTION ROW (bar is not in this row) */}
+                  {film.body ? (
+                    <div class="desc">
+                      <div set:html={film.body} />
+                    </div>
+                  ) : null}
                 </div>
 
-                <div class="meta">
-                  <div class="titleRow">
-                    <h2>{film.data.title}</h2>
-                    {film.data.year ? <span class="year">{film.data.year}</span> : null}
-                  </div>
-
-                  <div class="cats">
-                    {film.data.categories.map((c) => (
-                      <a class="pill" href={`/categories/${categoryToSlug(c)}`}>{c}</a>
-                    ))}
-                  </div>
-
-                  <div class="desc">
-                    {film.body ? <div set:html={film.body} /> : null}
+                {/* Right: player */}
+                <div class="playerCol">
+                  <div class="player">
+                    <iframe
+                      src={embedUrl(film)}
+                      title={film.data.title}
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowfullscreen
+                    ></iframe>
                   </div>
                 </div>
               </article>
@@ -177,10 +189,11 @@ function embedUrl(film: any) {
           </div>
 
           <div class="footerLinks">
-            <a href="/about">About</a>
-            <a href="/categories">Browse Films</a>
-            <a href="/contact">Contact</a>
-          </div>
+  <a href="/">Home</a>
+  <a href="/about">About</a>
+  <a href="/categories">Browse Films</a>
+  <a href="/contact">Contact</a>
+</div>
         </div>
       </footer>
     </main>
@@ -189,6 +202,7 @@ function embedUrl(film: any) {
       :global(body){margin:0;color:#fff;font-family:"Source Sans 3", ui-sans-serif, system-ui;background:#141414}
       h1,h2,.brand,.footerName{font-family:"Manrope", system-ui}
 
+      /* Background */
       .bg{position:fixed;inset:0;z-index:-1;background:#141414}
       .vignette{
         position:absolute;inset:-40px;
@@ -204,8 +218,9 @@ function embedUrl(film: any) {
         opacity:.075; mix-blend-mode:overlay; pointer-events:none;
       }
 
-      .wrap{max-width:980px;margin:54px auto;padding:0 20px}
+      .wrap{max-width:1180px;margin:54px auto;padding:0 20px}
 
+      /* Top nav */
       .top{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0 22px}
       .brand{color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem}
       .nav{display:flex;gap:12px;flex-wrap:wrap}
@@ -218,6 +233,7 @@ function embedUrl(film: any) {
       .navLink:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.32)}
       .navLink.active{color:#fff;border-bottom-color:rgba(255,215,0,0.45)}
 
+      /* Panel */
       .panel{
         border:1px solid rgba(255,255,255,0.08);
         border-radius:16px;
@@ -225,7 +241,7 @@ function embedUrl(film: any) {
         box-shadow: 0 18px 40px rgba(0,0,0,0.38);
         padding:18px 16px;
       }
-      .panelHead{padding:6px 8px 16px}
+      .panelHead{padding:6px 8px 18px}
 
       .crumbs{display:flex;gap:10px;align-items:center;color:rgba(255,255,255,0.60);font-size:.95rem}
       .crumbs a{color:rgba(255,215,0,0.90);text-decoration:none;border-bottom:1px solid rgba(255,215,0,0.22)}
@@ -237,23 +253,87 @@ function embedUrl(film: any) {
       .muted{color:rgba(255,255,255,0.62);padding:0 8px 10px}
       .inline{color:rgba(255,215,0,0.92)}
 
-      .stack{display:flex;flex-direction:column;gap:18px;padding:0 8px 10px}
+      /* More “sectioned” spacing */
+      .stack{display:flex;flex-direction:column;gap:28px;padding:0 8px 10px}
 
       .filmBlock{
+        position:relative;
+        display:grid;
+        grid-template-columns: 1.2fr 0.95fr;
+        gap:20px;
         border:1px solid rgba(255,255,255,0.10);
-        border-radius:16px;
+        border-radius:18px;
         background: linear-gradient(180deg, rgba(16,16,16,0.92), rgba(10,10,10,0.86));
         overflow:hidden;
+        padding:20px 20px 22px;
       }
-      .player{aspect-ratio:16/9;background:#111}
-      iframe{width:100%;height:100%;border:0;display:block}
 
-      .meta{padding:14px}
+      /* Subtle per-film “rule” */
+      .filmRule{
+        position:absolute;
+        left:18px; right:18px;
+        top:12px;
+        height:2px;
+        border-radius:99px;
+        background: linear-gradient(
+          90deg,
+          rgba(20,20,20,0),
+          rgba(255,255,255,0.10),
+          rgba(255,215,0,0.10),
+          rgba(80,170,255,0.10),
+          rgba(20,20,20,0)
+        );
+        box-shadow: 0 0 18px rgba(255,255,255,0.05);
+        pointer-events:none;
+      }
+
+      /* Hover */
+      .cardHover{
+        transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+        will-change:transform;
+      }
+      .cardHover:hover{
+        transform:translateY(-4px);
+        border-color:rgba(255,255,255,0.16);
+        box-shadow:
+          0 22px 44px rgba(0,0,0,.55),
+          0 0 0 1px rgba(255,215,0,0.05) inset;
+      }
+      @media (prefers-reduced-motion: reduce){
+        .cardHover{transition:none}
+      }
+
+      /* Left column */
+      .metaCol{min-width:0;padding-top:12px}
+
+      /* ✅ This is the critical structural change:
+         metaHeader is a 2-col grid where the bar sits ONLY in the header row. */
+      .metaHeader{
+        display:grid;
+        grid-template-columns: 3px 1fr;
+        column-gap:12px;
+        align-items:stretch;
+      }
+      .metaBar{
+        grid-column:1;
+        grid-row:1;
+        width:3px;
+        border-radius:99px;
+        background: linear-gradient(180deg, rgba(255,215,0,0.95), rgba(80,170,255,0.70));
+        box-shadow:0 0 18px rgba(255,215,0,0.08);
+        opacity:.95;
+      }
+      .metaTop{
+        grid-column:2;
+        grid-row:1;
+        padding-bottom:14px;
+      }
+
       .titleRow{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
-      h2{margin:0;font-size:1.25rem}
-      .year{color:rgba(255,255,255,0.60)}
+      .title{margin:0;font-size:1.35rem;letter-spacing:-0.01em}
+      .year{color:rgba(255,255,255,0.60);white-space:nowrap}
 
-      .cats{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+      .cats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
       .pill{
         display:inline-flex;align-items:center;
         padding:8px 12px;border-radius:999px;
@@ -261,12 +341,38 @@ function embedUrl(film: any) {
         background: rgba(0,0,0,0.20);
         color:rgba(255,255,255,0.86);
         text-decoration:none;
-        transition:transform .16s ease, border-color .16s ease;
+        transition:transform .16s ease, border-color .16s ease, color .16s ease;
       }
       .pill:hover{transform:translateY(-1px);border-color:rgba(255,255,255,0.18);color:#fff}
 
-      .desc :global(p){color:rgba(255,255,255,0.70);line-height:1.7;margin:12px 0 0}
+      /* ✅ Description is separate block, NOT part of the header row */
+      .desc{
+        margin-top:16px;
+        padding-top:16px;
+        border-top:1px solid rgba(255,255,255,0.08);
+      }
+      .desc :global(p){
+        color:rgba(255,255,255,0.72);
+        line-height:1.75;
+        font-size:1.02rem;
+        margin:12px 0 0;
+      }
+      .desc :global(p:first-child){margin-top:0}
 
+      /* Right column */
+      .playerCol{min-width:0;padding-top:12px}
+      .player{
+        width:100%;
+        aspect-ratio:16/9;
+        border-radius:16px;
+        overflow:hidden;
+        background:#111;
+        border:1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 14px 28px rgba(0,0,0,0.40);
+      }
+      iframe{width:100%;height:100%;border:0;display:block}
+
+      /* Footer */
       .footer{margin:26px 0 10px}
       .footerLine{
         height:3px;margin:26px 0 18px;border-radius:99px;
@@ -284,6 +390,12 @@ function embedUrl(film: any) {
         padding-bottom:2px;
       }
       .footerLinks a:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.30)}
+
+      @media (max-width: 980px){
+        .filmBlock{grid-template-columns:1fr}
+        .playerCol{order:-1}
+        .metaCol,.playerCol{padding-top:14px}
+      }
     </style>
   </body>
 </html>

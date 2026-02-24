@@ -2,6 +2,9 @@
 const SITE_EMAIL = "bnelson78@gmail.com";
 const PAGE_TITLE = "Contact — Bryan Nelson";
 const FACEBOOK_URL = "https://www.facebook.com/catachresisproductions";
+
+/* Formspree endpoint */
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mgolpjop";
 ---
 
 <html lang="en">
@@ -30,9 +33,10 @@ const FACEBOOK_URL = "https://www.facebook.com/catachresisproductions";
         <a class="brand" href="/">Bryan Nelson</a>
 
         <nav class="nav" aria-label="Primary navigation">
+          <a class="navLink" href="/">Home</a>
           <a class="navLink" href="/about">About</a>
           <a class="navLink" href="/categories">Browse Films</a>
-          <a class="navLink active" href="/contact">Contact</a>
+          <a class="navLink active" href="/contact" aria-current="page">Contact</a>
         </nav>
       </header>
 
@@ -45,22 +49,10 @@ const FACEBOOK_URL = "https://www.facebook.com/catachresisproductions";
         </div>
 
         <div class="grid">
-          <!-- Netlify Form -->
-          <form
-            class="form"
-            name="contact"
-            method="POST"
-            action="/contact/thanks"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
-          >
-            <!-- Netlify required -->
-            <input type="hidden" name="form-name" value="contact" />
-
-            <!-- Honeypot (ALWAYS hidden; no visible label) -->
-            <div hidden style="display:none;">
-              <input name="bot-field" tabindex="-1" autocomplete="off" />
-            </div>
+          <!-- FORM (Formspree) -->
+          <form class="form" action={FORMSPREE_ENDPOINT} method="POST">
+            <!-- Redirect after submit -->
+            <input type="hidden" name="_redirect" value="/contact/thanks" />
 
             <div class="row2">
               <label class="field">
@@ -143,21 +135,17 @@ const FACEBOOK_URL = "https://www.facebook.com/catachresisproductions";
           </div>
 
           <div class="footerLinks">
+            <a href="/">Home</a>
             <a href="/about">About</a>
             <a href="/categories">Browse Films</a>
-            <a href="/contact" aria-current="page">Contact</a>
+            <a href="/contact">Contact</a>
           </div>
         </div>
       </footer>
     </main>
 
     <style>
-      :global(body){
-        margin:0;
-        color:#fff;
-        font-family:"Source Sans 3", ui-sans-serif, system-ui;
-        background:#141414;
-      }
+      :global(body){margin:0;color:#fff;font-family:"Source Sans 3", ui-sans-serif, system-ui;background:#141414}
       h1,h2,.brand,.footerName{font-family:"Manrope", system-ui}
 
       /* Background */
@@ -285,11 +273,9 @@ const FACEBOOK_URL = "https://www.facebook.com/catachresisproductions";
       /* Footer */
       .footer{margin:26px 0 10px}
       .footerLine{
-        height:3px;
-        margin:26px 0 18px;
+        height:3px;margin:26px 0 18px;border-radius:99px;
         background: linear-gradient(90deg, rgba(20,20,20,0), rgba(255,255,255,0.20), rgba(20,20,20,0));
         box-shadow: 0 0 26px rgba(255,255,255,0.08);
-        border-radius:99px;
       }
       .footerInner{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap}
       .footerName{font-weight:700}

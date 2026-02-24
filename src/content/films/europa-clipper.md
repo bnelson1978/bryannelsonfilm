@@ -3,7 +3,7 @@ title: "Europa Clipper"
 year: 2025
 categories: ["Space & Astronomy", "Innovation & Technology"]
 home: true
-homeOrder: 6
+homeOrder: 7
 platform: "youtube"
 videoId: "qFLmFmijyqg"
 thumbnail: "/images/films/europa-clipper.png"

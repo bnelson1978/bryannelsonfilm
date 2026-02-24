@@ -1,7 +1,7 @@
 ---
 title: "Arizona's Rainforest"
 year: 2020
-categories: ["Nature & Environment", "Education", "Innovation & Technology"]
+categories: ["Nature & Environment", "Education"]
 platform: "youtube"
 videoId: "j3i3xVJ0WGM"
 ---

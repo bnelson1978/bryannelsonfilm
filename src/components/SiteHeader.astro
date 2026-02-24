@@ -1,0 +1,32 @@
+---
+type ActiveKey = "home" | "about" | "browse" | "contact" | null;
+
+const { active = null } = Astro.props as { active?: ActiveKey };
+---
+
+<header class="top">
+  <a class="brand" href="/">Bryan Nelson</a>
+
+  <nav class="nav" aria-label="Primary navigation">
+    <a class={`navLink ${active === "home" ? "active" : ""}`} href="/">Home</a>
+    <a class={`navLink ${active === "about" ? "active" : ""}`} href="/about">About</a>
+    <a class={`navLink ${active === "browse" ? "active" : ""}`} href="/categories">Browse Films</a>
+    <a class={`navLink ${active === "contact" ? "active" : ""}`} href="/contact">Contact</a>
+  </nav>
+</header>
+
+<style>
+  .top{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0 22px}
+  .brand{color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem;font-family:"Manrope", system-ui}
+  .nav{display:flex;gap:12px;flex-wrap:wrap}
+
+  .navLink{
+    color:rgba(255,255,255,0.75);
+    text-decoration:none;
+    border-bottom:1px solid rgba(255,255,255,0.16);
+    padding-bottom:2px;
+    font-family:"Source Sans 3", ui-sans-serif, system-ui;
+  }
+  .navLink:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.32)}
+  .navLink.active{color:#fff;border-bottom-color:rgba(255,215,0,0.45)}
+</style>
