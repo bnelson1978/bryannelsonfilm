@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 
-/** Canonical category display names */
+/** Canonical category display names (must match config.ts enum) */
 const CATEGORY_ORDER = [
   "Human Interest",
   "Space & Astronomy",
@@ -13,20 +13,32 @@ const CATEGORY_ORDER = [
   "New Frontiers",
 ];
 
+/**
+ * Slugify helper for use in the template + runtime logic.
+ * (Keep this at top-level for general use.)
+ */
 function categoryToSlug(category: string) {
-  return category
+  return String(category)
     .toLowerCase()
     .replace(/&/g, "and")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 }
 
+/** Slug -> display name lookup */
 const SLUG_TO_CATEGORY: Record<string, string> = Object.fromEntries(
   CATEGORY_ORDER.map((c) => [categoryToSlug(c), c])
 );
 
 export async function getStaticPaths() {
-  // Define categories INSIDE the function to avoid scope issues
+  // ✅ FIX: define slugify inside getStaticPaths so it’s always in-scope at build time
+  const categoryToSlugLocal = (category: string) =>
+    String(category)
+      .toLowerCase()
+      .replace(/&/g, "and")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+
   const categories = [
     "Human Interest",
     "Space & Astronomy",
@@ -39,7 +51,7 @@ export async function getStaticPaths() {
   ];
 
   return categories.map((c) => ({
-    params: { category: categoryToSlug(c) },
+    params: { category: categoryToSlugLocal(c) },
   }));
 }
 
