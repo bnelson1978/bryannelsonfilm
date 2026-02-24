@@ -18,7 +18,13 @@ const featured = films.find((f) => f.data.featured);
 
 const homeFilms = films
   .filter((f) => f.data.home)
-  .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
+  .sort((a, b) => {
+  const ao = a.data.homeOrder ?? 9999;
+  const bo = b.data.homeOrder ?? 9999;
+  if (ao !== bo) return ao - bo;
+
+  return (b.data.year ?? 0) - (a.data.year ?? 0);
+});
 
 function isMurrow(text) {
   return typeof text === "string" && text.toLowerCase().includes("murrow");
@@ -30,6 +36,15 @@ function getAwards(film) {
   if (Array.isArray(film.data.awards) && film.data.awards.length) return film.data.awards;
   if (typeof film.data.award === "string" && film.data.award.trim()) return [film.data.award.trim()];
   return [];
+}
+
+// ✅ NEW: use same slug rules as /categories pages
+function categoryToSlug(category) {
+  return String(category)
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 function byHomeSection(tag) {
@@ -400,7 +415,8 @@ const FEATURED_BLURB =
 
         <div class="catRow">
           {CATEGORY_ORDER.map((c) => (
-            <a class="catPill" href={`/categories/${encodeURIComponent(c)}`}>
+            // ✅ FIX: use slug routing to match /categories/[category].astro
+            <a class="catPill" href={`/categories/${categoryToSlug(c)}`}>
               <span class="pillDot"></span>
               {c}
             </a>

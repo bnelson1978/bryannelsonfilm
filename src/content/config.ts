@@ -16,7 +16,7 @@ const HOME_SECTION = z.enum([
   "osiris-rex",
   "fred-fox",
   "new-frontiers",
-  "independent-originals", // NEW
+  "independent-originals",
 ]);
 
 const films = defineCollection({
@@ -32,18 +32,25 @@ const films = defineCollection({
     featured: z.boolean().optional(),
     home: z.boolean().optional(),
 
+    // ordering on Selected Films grid
+    homeOrder: z.number().optional(),
+
     homeSections: z.array(HOME_SECTION).optional(),
 
     // manual ordering within each homepage section
     homeSectionOrder: z.record(HOME_SECTION, z.number()).optional(),
 
+    // optional category ordering (you said you’re not using it right now)
     categoryOrder: z.record(CATEGORY, z.number()).optional(),
 
     platform: z.enum(["youtube", "vimeo"]),
     videoId: z.string(),
-    thumbnail: z.string(),
+
+    // ✅ CHANGE: allow films without thumbnails
+    thumbnail: z.string().optional(),
 
     logline: z.string().optional(),
+    // (body/description stays in markdown content)
   }),
 });
 

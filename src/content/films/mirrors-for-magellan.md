@@ -4,6 +4,7 @@ year: 2021
 categories: ["Innovation & Technology", "Space & Astronomy"]
 award: "Emmy Award Winner"
 home: true
+homeOrder: 15
 platform: "youtube"
 videoId: "PMMwvN3p2eg"
 thumbnail: "/images/films/mirrors-for-magellan.png"

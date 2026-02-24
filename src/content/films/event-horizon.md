@@ -4,6 +4,7 @@ year: 2022
 categories: ["Space & Astronomy", "Innovation & Technology"]
 award: "Emmy Award Nominee"
 home: true
+homeOrder: 8
 platform: "youtube"
 videoId: "m-WbTC9PACA"
 thumbnail: "/images/films/event-horizon.png"

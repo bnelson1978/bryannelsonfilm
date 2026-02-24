@@ -3,6 +3,7 @@ title: "Dark Energy & the Ultimate Fate of the Universe"
 year: 2026
 categories: ["Space & Astronomy", "Innovation & Technology"]
 home: true
+homeOrder: 1
 platform: "youtube"
 videoId: "gpZrEhn1L6E"
 thumbnail: "/images/films/dark-energy.png"
