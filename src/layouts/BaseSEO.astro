@@ -1,0 +1,74 @@
+---
+const {
+  title = "Bryan Nelson — Documentary Filmmaker",
+  description = "Bryan Nelson is an Emmy and Edward R. Murrow Award–winning documentary filmmaker and founder of Catachresis Productions, creating cinematic films about science, ideas, and human stories.",
+  image = "/images/og-default.jpg",
+  url = "https://bryannelsonfilm.com",
+  type = "website",
+} = Astro.props;
+
+const SITE_NAME = "Bryan Nelson, Catachresis Productions";
+const FACEBOOK_URL = "https://www.facebook.com/catachresisproductions";
+---
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+
+  <!-- Primary SEO -->
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={url} />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content={type} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={`https://bryannelsonfilm.com${image}`} />
+  <meta property="og:url" content={url} />
+  <meta property="og:site_name" content={SITE_NAME} />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={`https://bryannelsonfilm.com${image}`} />
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" />
+
+  <!-- Color scheme -->
+  <meta name="color-scheme" content="dark" />
+
+  <!-- ✅ STEP 2: Person + Organization schema -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Bryan Nelson",
+    "url": "https://bryannelsonfilm.com",
+    "jobTitle": "Documentary Filmmaker",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Catachresis Productions",
+      "url": "https://bryannelsonfilm.com"
+    },
+    "award": [
+      "Regional Emmy Award",
+      "Edward R. Murrow Award"
+    ],
+    "sameAs": [
+      FACEBOOK_URL
+    ]
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Catachresis Productions",
+    "url": "https://bryannelsonfilm.com",
+    "founder": {
+      "@type": "Person",
+      "name": "Bryan Nelson"
+    }
+  })} />
+</head>

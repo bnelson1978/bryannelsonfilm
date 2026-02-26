@@ -38,15 +38,43 @@ const PAGE_TITLE = "About — Bryan Nelson";
       <section class="panel">
         <div class="panelHead">
           <h1>About</h1>
-          <p class="lead">(We’ll drop your bio here next.)</p>
         </div>
 
-        <div class="bodyCopy">
+        <article class="bio">
+          <!-- Portrait (added) -->
+          <img
+            class="portraitFloat"
+            src="/images/about-portrait.jpg"
+            alt="Portrait of Bryan Nelson"
+            loading="eager"
+            decoding="async"
+          />
+
           <p>
-            Add your bio, mission, and a few highlights here — awards, focus areas, or what kinds of collaborations you’re
-            open to.
+            <b>Bryan Nelson</b> is an Emmy Award–winning and Edward R. Murrow Award–winning documentary filmmaker, cinematographer, and journalist specializing in cinematic, human-centered storytelling about science, big ideas, and culture. His work is devoted to translating complex subjects into visually compelling, emotionally resonant stories for broad audiences.
           </p>
-        </div>
+
+          <p>
+            Most recently, Bryan served as a producer for Arizona Public Media (AZPM), the PBS affiliate in southern Arizona, where he produced more than 60 short films for the station’s flagship television program <i>Arizona Illustrated</i>, primarily covering breakthroughs in science, research, and the arts. He was also grant-funded to report on science and research at the University of Arizona, where he created and produced the television series <i>New Frontiers</i>, which showcased those stories.
+          </p>
+
+          <!-- Wrap under image begins here (paragraph 3) -->
+          <p class="wrapUnder">
+            Working closely with the University of Arizona — an R1 research institution and global leader in space sciences — Bryan produced films covering many of the most significant NASA missions of the past decade, with rare behind-the-scenes access to the teams behind OSIRIS-REx, the James Webb Space Telescope, and Europa Clipper missions. His work has reached worldwide audiences through coverage of history-making scientific milestones, including the Event Horizon Telescope’s first-ever image of a black hole, the global race to understand the origins of COVID-19 and develop vaccines, and the discovery of 23,000-year-old human footprints at White Sands National Park —findings that are reshaping our understanding of the earliest human presence in the Americas.
+          </p>
+
+          <p>
+            Collectively, his work has earned 8 Regional Emmy Awards (from 19 nominations) and 3 Edward R. Murrow Awards, recognizing excellence in storytelling, innovation, and public-interest journalism.
+          </p>
+
+          <p>
+            In addition to his public media career, Bryan is the founder of <b>Catachresis Productions</b>, where he creates independent documentaries and nonfiction films that have appeared at film festivals and screening events worldwide. His projects explore the intersection of knowledge, creativity, and human meaning — from cutting-edge space science to philosophy, education, and the hidden stories shaping our world. Several of these films were produced in collaboration with digital publishers, including Narrative Content Group’s <i>Mother Nature Network</i> (now <i>Treehugger</i>) and <i>Hakai Magazine</i>.
+          </p>
+
+          <p>
+            Bryan brings a filmmaker’s eye, a journalist’s instinct, and a storyteller’s curiosity to every project, crafting films that inform, move, and inspire.
+          </p>
+        </article>
       </section>
 
       <footer class="footer">
@@ -59,7 +87,7 @@ const PAGE_TITLE = "About — Bryan Nelson";
 
           <div class="footerLinks">
             <a href="/">Home</a>
-            <a href="/about">About</a>
+            <a href="/about" aria-current="page">About</a>
             <a href="/categories">Browse Films</a>
             <a href="/contact">Contact</a>
           </div>
@@ -68,8 +96,15 @@ const PAGE_TITLE = "About — Bryan Nelson";
     </main>
 
     <style>
-      :global(body){margin:0;color:#fff;font-family:"Source Sans 3", ui-sans-serif, system-ui;background:#141414}
-      h1,h2,.brand,.footerName{font-family:"Manrope", system-ui}
+      :global(body){
+        margin:0;
+        color:#fff;
+        font-family:"Source Sans 3", ui-sans-serif, system-ui;
+        background:#141414;
+      }
+      h1,.brand,.footerName{
+        font-family:"Manrope", system-ui;
+      }
 
       /* Background */
       .bg{position:fixed;inset:0;z-index:-1;background:#141414}
@@ -87,7 +122,7 @@ const PAGE_TITLE = "About — Bryan Nelson";
         opacity:.075; mix-blend-mode:overlay; pointer-events:none;
       }
 
-      .wrap{max-width:980px;margin:54px auto;padding:0 20px}
+      .wrap{max-width:920px;margin:54px auto;padding:0 20px}
 
       /* Top nav */
       .top{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0 22px}
@@ -108,24 +143,68 @@ const PAGE_TITLE = "About — Bryan Nelson";
         border-radius:16px;
         background: linear-gradient(180deg, rgba(12,12,12,0.95), rgba(8,8,8,0.85));
         box-shadow: 0 18px 40px rgba(0,0,0,0.38);
-        padding:18px 16px;
+        padding:24px 26px 28px;
       }
-      .panelHead{padding:6px 8px 16px}
-      h1{margin:0;font-size:2rem;letter-spacing:-0.01em}
-      .lead{margin:10px 0 0;color:rgba(255,255,255,0.70);line-height:1.6}
 
-      .bodyCopy{padding:0 8px 6px}
-      .bodyCopy p{margin:0;color:rgba(255,255,255,0.72);line-height:1.75;font-size:1.05rem}
+      .panelHead{
+        position:relative;
+        padding-left:14px;
+        margin-bottom:18px;
+      }
+      .panelHead::before{
+        content:"";
+        position:absolute;
+        left:0;
+        top:4px;
+        bottom:4px;
+        width:3px;
+        border-radius:99px;
+        background: linear-gradient(180deg, rgba(255,215,0,0.95), rgba(80,170,255,0.70));
+        box-shadow:0 0 18px rgba(255,215,0,0.08);
+      }
+
+      h1{margin:0;font-size:2rem;letter-spacing:-0.01em}
+
+      .bio p{
+        margin:18px 0 0;
+        color:rgba(255,255,255,0.75);
+        line-height:1.85;
+        font-size:1.05rem;
+      }
+      .bio p:first-of-type{margin-top:0}
+
+      /* Portrait sizing + wrap control (ONLY change requested) */
+      .portraitFloat{
+        float:left;
+        width:240px;          /* resize: balanced for two paragraphs beside */
+        height:auto;          /* no cropping */
+        margin:4px 22px 14px 0;
+        border-radius:14px;
+        border:1px solid rgba(255,255,255,0.12);
+      }
+
+      /* Force wrapping under the image starting at paragraph 3 */
+      .wrapUnder{ clear:left; }
+
+      @media (max-width: 720px){
+        .portraitFloat{
+          float:none;
+          display:block;
+          width:100%;
+          max-width:420px;
+          margin:0 auto 18px;
+        }
+        .wrapUnder{ clear:none; }
+      }
 
       /* Footer */
-      .footer{margin:26px 0 10px}
+      .footer{margin:30px 0 10px}
       .footerLine{
         height:3px;margin:26px 0 18px;border-radius:99px;
         background: linear-gradient(90deg, rgba(20,20,20,0), rgba(255,255,255,0.20), rgba(20,20,20,0));
         box-shadow: 0 0 26px rgba(255,255,255,0.08);
       }
       .footerInner{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap}
-      .footerName{font-weight:700}
       .footerSub{color:rgba(255,255,255,0.58);margin-top:4px}
       .footerLinks{display:flex;gap:14px;flex-wrap:wrap}
       .footerLinks a{
