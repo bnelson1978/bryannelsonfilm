@@ -76,7 +76,36 @@ const FEATURED_BLURB =
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Bryan Nelson — Documentary Filmmaker</title>
+    <title>Bryan Nelson | Emmy Award-Winning Documentary Filmmaker & Video Producer | Catachresis Productions</title>
+    <meta name="description" content="Bryan Nelson is an Emmy Award–winning documentary filmmaker and video producer specializing in science, NASA missions, breakthrough discoveries, and human-centered storytelling. Founder of Catachresis Productions." />
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://bryannelsonfilm.com/#person",
+      "name": "Bryan Nelson",
+      "url": "https://bryannelsonfilm.com/",
+      "image": "https://bryannelsonfilm.com/images/about-portrait.jpg",
+      "jobTitle": "Documentary Filmmaker and Video Producer",
+      "worksFor": {
+        "@id": "https://bryannelsonfilm.com/#organization"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://bryannelsonfilm.com/#organization",
+      "name": "Catachresis Productions",
+      "url": "https://bryannelsonfilm.com/",
+      "logo": "https://bryannelsonfilm.com/images/logo/catachresis.png",
+      "founder": {
+        "@id": "https://bryannelsonfilm.com/#person"
+      }
+    }
+  ]
+}
+</script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -97,7 +126,10 @@ const FEATURED_BLURB =
       <header class="heroTop">
         <div class="heroLeft">
           <h1 class="heroName">Bryan Nelson</h1>
-          <p class="sub">Documentary filmmaker • Founder, Catachresis Productions</p>
+          <p class="sub">
+  Documentary Filmmaker &nbsp;&&nbsp; Video Producer<br />
+  <span class="subSecondary">Founder, Catachresis Productions</span>
+</p>
         </div>
 
         <nav class="actions" aria-label="Primary navigation">
@@ -474,6 +506,12 @@ const FEATURED_BLURB =
       }
       .heroName{margin:0;font-size:2.6rem;letter-spacing:-0.01em;line-height:1.05;font-weight:700}
       .sub{margin:8px 0 0;color:rgba(255,255,255,0.72)}
+      .subSecondary{
+  display:inline-block;
+  margin-top:4px;
+  color:rgba(255,255,255,0.60);
+  font-size:.98rem;
+}
       .actions{display:flex;gap:10px;flex-wrap:wrap}
       .btn{
         border:1px solid rgba(255,255,255,0.12);

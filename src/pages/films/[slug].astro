@@ -37,6 +37,78 @@ function getAwards(f) {
   if (typeof f.data.award === "string" && f.data.award.trim()) return [f.data.award.trim()];
   return [];
 }
+
+/** ---------------------------
+ * Video Schema helpers
+ * --------------------------*/
+const SITE_ORIGIN = (Astro.site && Astro.site.origin) ? Astro.site.origin : "https://bryannelsonfilm.com";
+const pageUrl = `${SITE_ORIGIN}/films/${film.slug}/`;
+
+function absolutizeUrl(maybePath) {
+  if (!maybePath || typeof maybePath !== "string") return undefined;
+  if (maybePath.startsWith("http://") || maybePath.startsWith("https://")) return maybePath;
+  const path = maybePath.startsWith("/") ? maybePath : `/${maybePath}`;
+  return `${SITE_ORIGIN}${path}`;
+}
+
+function stripHtml(html) {
+  if (typeof html !== "string") return "";
+  return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function truncate(text, n = 200) {
+  if (!text) return "";
+  if (text.length <= n) return text;
+  return text.slice(0, n - 1).trimEnd() + "…";
+}
+
+// Prefer a dedicated description field if you have one, otherwise fall back to body text.
+const descriptionRaw =
+  (typeof film.data.logline === "string" && film.data.logline.trim()) ? film.data.logline.trim()
+  : (typeof film.data.description === "string" && film.data.description.trim()) ? film.data.description.trim()
+  : truncate(stripHtml(film.body ?? ""), 220);
+
+const thumbnailUrl = absolutizeUrl(film.data.thumbnail);
+
+// For YouTube/Vimeo we’ll include both contentUrl and embedUrl.
+// (Google is fine with either/both; embedUrl is especially useful.)
+const contentUrl =
+  platform === "youtube"
+    ? `https://www.youtube.com/watch?v=${videoId}`
+    : `https://vimeo.com/${videoId}`;
+
+// If you only have a year, give Google a stable datePublished guess.
+const datePublished =
+  typeof film.data.year === "number" ? `${film.data.year}-01-01` : undefined;
+
+const keywords =
+  Array.isArray(film.data.categories) ? film.data.categories.join(", ") : undefined;
+
+const videoSchema = {
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: title,
+  description: descriptionRaw || undefined,
+  thumbnailUrl: thumbnailUrl ? [thumbnailUrl] : undefined,
+  uploadDate: datePublished, // best-effort if you only store year
+  datePublished: datePublished,
+  embedUrl,
+  contentUrl,
+  url: pageUrl,
+  inLanguage: "en",
+  keywords,
+  // Light but strong identity signals:
+  creator: {
+    "@type": "Person",
+    name: "Bryan Nelson",
+    url: SITE_ORIGIN,
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "Catachresis Productions",
+    url: SITE_ORIGIN,
+  },
+};
 ---
 
 <html lang="en">
@@ -44,6 +116,12 @@ function getAwards(f) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>
+
+    {/* Canonical */}
+    <link rel="canonical" href={pageUrl} />
+
+    {/* Video schema (JSON-LD) */}
+    <script type="application/ld+json" set:html={JSON.stringify(videoSchema)} />
   </head>
   <body>
     <main style="max-width:980px;margin:48px auto;padding:0 20px;color:#fff;">
