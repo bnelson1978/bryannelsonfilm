@@ -1,7 +1,7 @@
 ---
 title: "An Unequivocal Truth"
 year: 2021
-categories: ["Nature & Environment"]
+categories: ["Nature & Environment", "Human Interest"]
 award: "Emmy Award Winner"
 home: true
 homeOrder: 13

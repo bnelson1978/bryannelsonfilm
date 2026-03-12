@@ -26,7 +26,6 @@ const SLUG_TO_CATEGORY: Record<string, string> = Object.fromEntries(
 );
 
 export async function getStaticPaths() {
-  // ✅ Self-contained to avoid build-scope issues
   const categories = [
     "Human Interest",
     "Space & Astronomy",
@@ -70,6 +69,20 @@ function embedUrl(film: any) {
   if (film.data.platform === "youtube") return `https://www.youtube.com/embed/${film.data.videoId}`;
   return `https://player.vimeo.com/video/${film.data.videoId}`;
 }
+
+function isMurrow(text: string) {
+  return typeof text === "string" && text.toLowerCase().includes("murrow");
+}
+
+function awardColor(text: string) {
+  return isMurrow(text) ? "#4aa3ff" : "#ffd700";
+}
+
+function getAwards(film: any) {
+  if (Array.isArray(film.data.awards) && film.data.awards.length) return film.data.awards;
+  if (typeof film.data.award === "string" && film.data.award.trim()) return [film.data.award.trim()];
+  return [];
+}
 ---
 
 <html lang="en">
@@ -98,11 +111,11 @@ function embedUrl(film: any) {
         <a class="brand" href="/">Bryan Nelson</a>
 
         <nav class="nav" aria-label="Primary navigation">
-  <a class="navLink" href="/">Home</a>
-  <a class="navLink" href="/about">About</a>
-  <a class="navLink" href="/categories">Browse Films</a>
-  <a class="navLink" href="/contact">Contact</a>
-</nav>
+          <a class="navLink" href="/">Home</a>
+          <a class="navLink" href="/about">About</a>
+          <a class="navLink" href="/categories">Browse Films</a>
+          <a class="navLink" href="/contact">Contact</a>
+        </nav>
       </header>
 
       <section class="panel">
@@ -127,9 +140,7 @@ function embedUrl(film: any) {
               <article class="filmBlock cardHover">
                 <div class="filmRule" aria-hidden="true"></div>
 
-                {/* Left: meta/copy */}
                 <div class="metaCol">
-                  {/* ✅ HEADER ROW ONLY (bar lives here, cannot reach description) */}
                   <div class="metaHeader">
                     <div class="metaBar" aria-hidden="true"></div>
 
@@ -144,10 +155,19 @@ function embedUrl(film: any) {
                           <a class="pill" href={`/categories/${categoryToSlug(c)}`}>{c}</a>
                         ))}
                       </div>
+
+                      {getAwards(film).length ? (
+                        <div class="awardsStack">
+                          {getAwards(film).map((a) => (
+                            <div style={`color:${awardColor(a)}; font-weight:600;`}>
+                              🏆 {a}
+                            </div>
+                          ))}
+                        </div>
+                      ) : null}
                     </div>
                   </div>
 
-                  {/* ✅ DESCRIPTION ROW (bar is not in this row) */}
                   {film.body ? (
                     <div class="desc">
                       <div set:html={film.body} />
@@ -155,7 +175,6 @@ function embedUrl(film: any) {
                   ) : null}
                 </div>
 
-                {/* Right: player */}
                 <div class="playerCol">
                   <div class="player">
                     <iframe
@@ -189,11 +208,11 @@ function embedUrl(film: any) {
           </div>
 
           <div class="footerLinks">
-  <a href="/">Home</a>
-  <a href="/about">About</a>
-  <a href="/categories">Browse Films</a>
-  <a href="/contact">Contact</a>
-</div>
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/categories">Browse Films</a>
+            <a href="/contact">Contact</a>
+          </div>
         </div>
       </footer>
     </main>
@@ -202,7 +221,6 @@ function embedUrl(film: any) {
       :global(body){margin:0;color:#fff;font-family:"Source Sans 3", ui-sans-serif, system-ui;background:#141414}
       h1,h2,.brand,.footerName{font-family:"Manrope", system-ui}
 
-      /* Background */
       .bg{position:fixed;inset:0;z-index:-1;background:#141414}
       .vignette{
         position:absolute;inset:-40px;
@@ -220,7 +238,6 @@ function embedUrl(film: any) {
 
       .wrap{max-width:1180px;margin:54px auto;padding:0 20px}
 
-      /* Top nav */
       .top{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0 22px}
       .brand{color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem}
       .nav{display:flex;gap:12px;flex-wrap:wrap}
@@ -233,7 +250,6 @@ function embedUrl(film: any) {
       .navLink:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.32)}
       .navLink.active{color:#fff;border-bottom-color:rgba(255,215,0,0.45)}
 
-      /* Panel */
       .panel{
         border:1px solid rgba(255,255,255,0.08);
         border-radius:16px;
@@ -253,7 +269,6 @@ function embedUrl(film: any) {
       .muted{color:rgba(255,255,255,0.62);padding:0 8px 10px}
       .inline{color:rgba(255,215,0,0.92)}
 
-      /* More “sectioned” spacing */
       .stack{display:flex;flex-direction:column;gap:28px;padding:0 8px 10px}
 
       .filmBlock{
@@ -268,7 +283,6 @@ function embedUrl(film: any) {
         padding:20px 20px 22px;
       }
 
-      /* Subtle per-film “rule” */
       .filmRule{
         position:absolute;
         left:18px; right:18px;
@@ -287,7 +301,6 @@ function embedUrl(film: any) {
         pointer-events:none;
       }
 
-      /* Hover */
       .cardHover{
         transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
         will-change:transform;
@@ -303,11 +316,8 @@ function embedUrl(film: any) {
         .cardHover{transition:none}
       }
 
-      /* Left column */
       .metaCol{min-width:0;padding-top:12px}
 
-      /* ✅ This is the critical structural change:
-         metaHeader is a 2-col grid where the bar sits ONLY in the header row. */
       .metaHeader{
         display:grid;
         grid-template-columns: 3px 1fr;
@@ -345,7 +355,12 @@ function embedUrl(film: any) {
       }
       .pill:hover{transform:translateY(-1px);border-color:rgba(255,255,255,0.18);color:#fff}
 
-      /* ✅ Description is separate block, NOT part of the header row */
+      .awardsStack{
+        margin-top:12px;
+        font-size:.92rem;
+        line-height:1.4;
+      }
+
       .desc{
         margin-top:16px;
         padding-top:16px;
@@ -359,7 +374,6 @@ function embedUrl(film: any) {
       }
       .desc :global(p:first-child){margin-top:0}
 
-      /* Right column */
       .playerCol{min-width:0;padding-top:12px}
       .player{
         width:100%;
@@ -372,7 +386,6 @@ function embedUrl(film: any) {
       }
       iframe{width:100%;height:100%;border:0;display:block}
 
-      /* Footer */
       .footer{margin:26px 0 10px}
       .footerLine{
         height:3px;margin:26px 0 18px;border-radius:99px;

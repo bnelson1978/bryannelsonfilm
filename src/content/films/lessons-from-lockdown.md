@@ -1,7 +1,7 @@
 ---
 title: "Lessons From Lockdown"
 year: 2025
-categories: ["Nature & Environment"]
+categories: ["Nature & Environment", "Health Sciences"]
 platform: "youtube"
 videoId: "gQZV0vi5vGQ"
 ---

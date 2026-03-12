@@ -1,7 +1,7 @@
 ---
 title: "Favorite Places: Health Sciences Innovation Building"
 year: 2022
-categories: ["Health Sciences", "Innovation & Technology", "Education"]
+categories: ["Health Sciences", "Innovation & Technology"]
 platform: "youtube"
 videoId: "qqSHh49tIzc"
 ---

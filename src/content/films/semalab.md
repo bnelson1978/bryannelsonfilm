@@ -1,7 +1,7 @@
 ---
 title: "SEMA Lab"
 year: 2023
-categories: ["Innovation & Technology", "Human Interest", "Health Sciences"]
+categories: ["Innovation & Technology", "Health Sciences"]
 platform: "youtube"
 videoId: "l3AInCwm4lw"
 ---

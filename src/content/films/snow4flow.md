@@ -1,7 +1,7 @@
 ---
 title: "Snow4Flow: Studying Glaciers From Arizona"
 year: 2025
-categories: ["Nature & Environment"]
+categories: ["Nature & Environment", "Innovation & Technology"]
 award: "Emmy Award Nominee"
 home: true
 homeOrder: 5

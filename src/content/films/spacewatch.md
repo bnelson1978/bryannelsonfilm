@@ -1,7 +1,7 @@
 ---
 title: "SPACEWATCH"
 year: 2023
-categories: ["Space & Astronomy"]
+categories: ["Space & Astronomy", "Human Interest"]
 award: "Emmy Award Winner"
 home: true
 homeOrder: 10
