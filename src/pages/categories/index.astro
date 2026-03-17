@@ -10,11 +10,14 @@ const CATEGORY_ORDER = [
   "Education",
   "Innovation & Technology",
   "New Frontiers",
-];
+  "Branded",
+] as const;
+
+type Category = typeof CATEGORY_ORDER[number];
 
 const films = await getCollection("films");
 
-function categoryToSlug(category: string) {
+function categoryToSlug(category: Category) {
   return category
     .toLowerCase()
     .replace(/&/g, "and")
@@ -22,7 +25,7 @@ function categoryToSlug(category: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-function countForCategory(category: string) {
+function countForCategory(category: Category) {
   return films.filter((f) => Array.isArray(f.data.categories) && f.data.categories.includes(category)).length;
 }
 

@@ -11,9 +11,12 @@ const CATEGORY_ORDER = [
   "Education",
   "Innovation & Technology",
   "New Frontiers",
-];
+  "Branded",
+] as const;
 
-function categoryToSlug(category: string) {
+type Category = typeof CATEGORY_ORDER[number];
+
+function categoryToSlug(category: Category) {
   return String(category)
     .toLowerCase()
     .replace(/&/g, "and")
@@ -21,21 +24,23 @@ function categoryToSlug(category: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-const SLUG_TO_CATEGORY: Record<string, string> = Object.fromEntries(
+const SLUG_TO_CATEGORY: Record<string, Category> = Object.fromEntries(
   CATEGORY_ORDER.map((c) => [categoryToSlug(c), c])
-);
+) as Record<string, Category>;
 
 export async function getStaticPaths() {
+  // Keep this self-contained for Astro
   const categories = [
-    "Human Interest",
-    "Space & Astronomy",
-    "Health Sciences",
-    "Arts & Culture",
-    "Nature & Environment",
-    "Education",
-    "Innovation & Technology",
-    "New Frontiers",
-  ];
+  "Human Interest",
+  "Space & Astronomy",
+  "Health Sciences",
+  "Arts & Culture",
+  "Nature & Environment",
+  "Education",
+  "Innovation & Technology",
+  "New Frontiers",
+  "Branded",
+];
 
   const toSlug = (category: string) =>
     String(category)
@@ -52,7 +57,7 @@ export async function getStaticPaths() {
 const films = await getCollection("films");
 
 const slug = Astro.params.category ?? "";
-const category = SLUG_TO_CATEGORY[slug] ?? null;
+const category = SLUG_TO_CATEGORY[slug];
 
 const matches = category
   ? films
@@ -70,17 +75,21 @@ function embedUrl(film: any) {
   return `https://player.vimeo.com/video/${film.data.videoId}`;
 }
 
-function isMurrow(text: string) {
+function isMurrow(text: unknown) {
   return typeof text === "string" && text.toLowerCase().includes("murrow");
 }
 
-function awardColor(text: string) {
+function awardColor(text: unknown) {
   return isMurrow(text) ? "#4aa3ff" : "#ffd700";
 }
 
-function getAwards(film: any) {
-  if (Array.isArray(film.data.awards) && film.data.awards.length) return film.data.awards;
-  if (typeof film.data.award === "string" && film.data.award.trim()) return [film.data.award.trim()];
+function getAwards(film: any): string[] {
+  if (Array.isArray(film?.data?.awards) && film.data.awards.length) {
+    return film.data.awards.filter((a: unknown): a is string => typeof a === "string" && a.trim().length > 0);
+  }
+  if (typeof film?.data?.award === "string" && film.data.award.trim()) {
+    return [film.data.award.trim()];
+  }
   return [];
 }
 ---

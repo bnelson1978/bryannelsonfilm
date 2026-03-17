@@ -9,6 +9,7 @@ const CATEGORY = z.enum([
   "Education",
   "Innovation & Technology",
   "New Frontiers",
+  "Branded",
 ]);
 
 const HOME_SECTION = z.enum([

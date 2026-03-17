@@ -10,7 +10,20 @@ const CATEGORY_ORDER = [
   "Education",
   "Innovation & Technology",
   "New Frontiers",
-];
+  "Branded",
+] as const;
+
+type Category = typeof CATEGORY_ORDER[number];
+
+const HOME_SECTIONS = [
+  "selected",
+  "osiris-rex",
+  "fred-fox",
+  "new-frontiers",
+  "independent-originals",
+] as const;
+
+type HomeSection = typeof HOME_SECTIONS[number];
 
 const films = await getCollection("films");
 
@@ -26,20 +39,25 @@ const homeFilms = films
     return (b.data.year ?? 0) - (a.data.year ?? 0);
   });
 
-function isMurrow(text) {
+function isMurrow(text: unknown) {
   return typeof text === "string" && text.toLowerCase().includes("murrow");
 }
-function awardColor(text) {
+
+function awardColor(text: unknown) {
   return isMurrow(text) ? "#4aa3ff" : "#ffd700";
 }
-function getAwards(film) {
-  if (Array.isArray(film.data.awards) && film.data.awards.length) return film.data.awards;
-  if (typeof film.data.award === "string" && film.data.award.trim()) return [film.data.award.trim()];
+
+function getAwards(film: any): string[] {
+  if (Array.isArray(film?.data?.awards) && film.data.awards.length) {
+    return film.data.awards.filter((a: unknown): a is string => typeof a === "string" && a.trim().length > 0);
+  }
+  if (typeof film?.data?.award === "string" && film.data.award.trim()) {
+    return [film.data.award.trim()];
+  }
   return [];
 }
 
-// ✅ NEW: use same slug rules as /categories pages
-function categoryToSlug(category) {
+function categoryToSlug(category: Category) {
   return String(category)
     .toLowerCase()
     .replace(/&/g, "and")
@@ -47,7 +65,7 @@ function categoryToSlug(category) {
     .replace(/(^-|-$)/g, "");
 }
 
-function byHomeSection(tag) {
+function byHomeSection(tag: HomeSection) {
   return films
     .filter((f) => Array.isArray(f.data.homeSections) && f.data.homeSections.includes(tag))
     .sort((a, b) => {
@@ -744,7 +762,7 @@ const FEATURED_BLURB =
     </style>
 
     <script>
-      function setupRolodexRow(rowWrap) {
+      function setupRolodexRow(rowWrap: HTMLElement) {
         const strip = rowWrap.querySelector("[data-rowstrip]");
         const btnL = rowWrap.querySelector('[data-arrow="left"]');
         const btnR = rowWrap.querySelector('[data-arrow="right"]');
@@ -769,7 +787,7 @@ const FEATURED_BLURB =
           if (glowR) glowR.classList.toggle("is-on", canScroll && !atRight);
         };
 
-        const scrollByAmount = (dir) => {
+        const scrollByAmount = (dir: number) => {
           const amt = Math.max(240, Math.floor(strip.clientWidth * 0.9));
           strip.scrollBy({ left: dir * amt, behavior: "smooth" });
         };
@@ -789,7 +807,9 @@ const FEATURED_BLURB =
         setTimeout(update, 900);
       }
 
-      document.querySelectorAll("[data-rowwrap]").forEach(setupRolodexRow);
+      document.querySelectorAll("[data-rowwrap]").forEach((el) => {
+  if (el instanceof HTMLElement) setupRolodexRow(el);
+});
     </script>
   </body>
 </html>
