@@ -7,7 +7,7 @@ home: true
 homeOrder: 3
 platform: "youtube"
 videoId: "8QQWqYe3_S8"
-thumbnail: "/images/films/philosophy-of-fiction.png"
+thumbnail: "/images/films/philosophy-of-fiction.jpg"
 ---
 
 Fictional storytelling is an important and pervasive part of how human cultures transmit knowledge and values across generations. But there are many philosophical questions that arise from this human act of fiction-making. For instance, what does it mean for a work of fiction — that is, a made-up story — to say something about what’s true?

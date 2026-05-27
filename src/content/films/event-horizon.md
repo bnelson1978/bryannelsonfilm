@@ -7,7 +7,7 @@ home: true
 homeOrder: 8
 platform: "youtube"
 videoId: "m-WbTC9PACA"
-thumbnail: "/images/films/event-horizon.png"
+thumbnail: "/images/films/event-horizon.jpg"
 ---
 
 The Event Horizon Telescope is a worldwide collaboration of radio telescopes that wowed the world in 2019 by taking the first images ever captured of a black hole. The monumental undertaking was spearheaded at the University of Arizona, which operates 3 of the telescopes in the array… one on Mt. Graham, one on Kitt Peak, and even one at the South Pole.

@@ -7,7 +7,7 @@ homeSectionOrder:
   fred-fox: 3
 platform: "youtube"
 videoId: "raIbX3ynmJk"
-thumbnail: "/images/films/ana-maria.png"
+thumbnail: "/images/films/ana-maria.jpg"
 ---
 
 Ana Maria Iordache is a performing graduate student in guitar at the University of Arizona’s Fred Fox School of Music. In this intimate performance, she showcases her love of the guitar and discusses how the instrument has shaped her life.
