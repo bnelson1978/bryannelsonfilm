@@ -1,3 +1,4 @@
+
 ---
 import { getCollection } from "astro:content";
 
@@ -26,7 +27,6 @@ const HOME_SECTIONS = [
 type HomeSection = typeof HOME_SECTIONS[number];
 
 const films = await getCollection("films");
-
 const featured = films.find((f) => f.data.featured);
 
 const homeFilms = films
@@ -35,7 +35,6 @@ const homeFilms = films
     const ao = a.data.homeOrder ?? 9999;
     const bo = b.data.homeOrder ?? 9999;
     if (ao !== bo) return ao - bo;
-
     return (b.data.year ?? 0) - (a.data.year ?? 0);
   });
 
@@ -49,11 +48,16 @@ function awardColor(text: unknown) {
 
 function getAwards(film: any): string[] {
   if (Array.isArray(film?.data?.awards) && film.data.awards.length) {
-    return film.data.awards.filter((a: unknown): a is string => typeof a === "string" && a.trim().length > 0);
+    return film.data.awards.filter(
+      (a: unknown): a is string =>
+        typeof a === "string" && a.trim().length > 0
+    );
   }
+
   if (typeof film?.data?.award === "string" && film.data.award.trim()) {
     return [film.data.award.trim()];
   }
+
   return [];
 }
 
@@ -67,7 +71,11 @@ function categoryToSlug(category: Category) {
 
 function byHomeSection(tag: HomeSection) {
   return films
-    .filter((f) => Array.isArray(f.data.homeSections) && f.data.homeSections.includes(tag))
+    .filter(
+      (f) =>
+        Array.isArray(f.data.homeSections) &&
+        f.data.homeSections.includes(tag)
+    )
     .sort((a, b) => {
       const ao = a.data.homeSectionOrder?.[tag] ?? 999999;
       const bo = b.data.homeSectionOrder?.[tag] ?? 999999;
@@ -94,36 +102,80 @@ const FEATURED_BLURB =
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Bryan Nelson | Emmy Award-Winning Documentary Filmmaker & Video Producer | Catachresis Productions</title>
-    <meta name="description" content="Bryan Nelson is an Emmy Award–winning documentary filmmaker and video producer specializing in science, NASA missions, breakthrough discoveries, and human-centered storytelling. Founder of Catachresis Productions." />
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Person",
-      "@id": "https://bryannelsonfilm.com/#person",
-      "name": "Bryan Nelson",
-      "url": "https://bryannelsonfilm.com/",
-      "image": "https://bryannelsonfilm.com/images/about-portrait.jpg",
-      "jobTitle": "Documentary Filmmaker and Video Producer",
-      "worksFor": {
-        "@id": "https://bryannelsonfilm.com/#organization"
-      }
-    },
-    {
-      "@type": "Organization",
-      "@id": "https://bryannelsonfilm.com/#organization",
-      "name": "Catachresis Productions",
-      "url": "https://bryannelsonfilm.com/",
-      "logo": "https://bryannelsonfilm.com/images/logo/catachresis.png",
-      "founder": {
-        "@id": "https://bryannelsonfilm.com/#person"
-      }
-    }
-  ]
-}
-</script>
+
+    <title>Bryan Nelson | Emmy Award-Winning Documentary Filmmaker</title>
+
+    <meta
+      name="description"
+      content="Bryan Nelson is a 9-time Regional Emmy Award-winning documentary filmmaker, cinematographer, and journalist specializing in science, space exploration, research, and human-centered storytelling."
+    />
+
+    <link rel="canonical" href="https://bryannelsonfilm.com/" />
+
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Bryan Nelson | Emmy Award-Winning Documentary Filmmaker"
+    />
+    <meta
+      property="og:description"
+      content="Explore the award-winning documentary films and science storytelling of Bryan Nelson, filmmaker, cinematographer, and journalist."
+    />
+    <meta property="og:url" content="https://bryannelsonfilm.com/" />
+    <meta
+      property="og:image"
+      content="https://bryannelsonfilm.com/images/about-portrait.jpg"
+    />
+    <meta
+      property="og:image:alt"
+      content="Portrait of Bryan Nelson, documentary filmmaker and cinematographer"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://bryannelsonfilm.com/#person",
+            "name": "Bryan Nelson",
+            "url": "https://bryannelsonfilm.com/",
+            "mainEntityOfPage": "https://bryannelsonfilm.com/about",
+            "image": "https://bryannelsonfilm.com/images/about-portrait.jpg",
+            "jobTitle": "Documentary Filmmaker, Cinematographer, Journalist, and Content Producer",
+            "description": "Nine-time Regional Emmy Award-winning documentary filmmaker and journalist specializing in science, research, and human-centered storytelling.",
+            "worksFor": {
+              "@type": "Organization",
+              "name": "Washington State University",
+              "url": "https://wsu.edu/"
+            },
+            "founder": {
+              "@id": "https://bryannelsonfilm.com/#organization"
+            },
+            "knowsAbout": [
+              "Documentary filmmaking",
+              "Cinematography",
+              "Science journalism",
+              "Space exploration",
+              "Science communication",
+              "Research storytelling"
+            ]
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://bryannelsonfilm.com/#organization",
+            "name": "Catachresis Productions",
+            "url": "https://bryannelsonfilm.com/",
+            "logo": "https://bryannelsonfilm.com/images/logo/catachresis.png",
+            "founder": {
+              "@id": "https://bryannelsonfilm.com/#person"
+            }
+          }
+        ]
+      })}
+    />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -145,9 +197,9 @@ const FEATURED_BLURB =
         <div class="heroLeft">
           <h1 class="heroName">Bryan Nelson</h1>
           <p class="sub">
-  Documentary Filmmaker &nbsp;&&nbsp; Video Producer<br />
-  <span class="subSecondary">Founder, Catachresis Productions</span>
-</p>
+            Documentary Filmmaker &nbsp;&&nbsp; Video Producer<br />
+            <span class="subSecondary">Founder, Catachresis Productions</span>
+          </p>
         </div>
 
         <nav class="actions" aria-label="Primary navigation">
@@ -190,7 +242,9 @@ const FEATURED_BLURB =
                 </div>
               ) : null}
 
-              {featured.data.logline ? <p class="featuredLogline">{featured.data.logline}</p> : null}
+              {featured.data.logline ? (
+                <p class="featuredLogline">{featured.data.logline}</p>
+              ) : null}
 
               <div class="ctaRow">
                 <span class="watchBtn">Watch</span>
@@ -206,12 +260,10 @@ const FEATURED_BLURB =
 
       <hr class="sectionDivider" />
 
-      {/* Selected Films (plain grid, no Show More/Less) */}
+      {/* Selected Films */}
       <section class="sectionBlock">
         <div class="sectionHead split">
           <h2 class="sectionTitle sectionTitleLarge">Selected Films</h2>
-
-          {/* ✅ CHANGED: See all is now a pill (only here) */}
           <a class="seeAll seeAllPill" href="/categories">See all</a>
         </div>
 
@@ -219,7 +271,11 @@ const FEATURED_BLURB =
           {homeFilms.map((film) => (
             <a class="card cardHover" href={`/films/${film.slug}`}>
               <div class="thumb">
-                <img src={film.data.thumbnail} alt={film.data.title} loading="lazy" />
+                <img
+                  src={film.data.thumbnail}
+                  alt={film.data.title}
+                  loading="lazy"
+                />
               </div>
 
               <div class="meta">
@@ -252,7 +308,9 @@ const FEATURED_BLURB =
         <div class="sectionHead split">
           <div>
             <h2 class="sectionTitle">NASA's OSIRIS-REx Mission Coverage</h2>
-            <div class="mutedSmall">Documentaries highlighting all the major milestones</div>
+            <div class="mutedSmall">
+              Documentaries highlighting all the major milestones
+            </div>
           </div>
           <span class="scrollHint">← scroll →</span>
         </div>
@@ -304,7 +362,9 @@ const FEATURED_BLURB =
         <div class="sectionHead split">
           <div>
             <h2 class="sectionTitle">Fred Fox School of Music Series</h2>
-            <div class="mutedSmall">Performances and artist profiles — scroll for more</div>
+            <div class="mutedSmall">
+              Performances and artist profiles — scroll for more
+            </div>
           </div>
           <span class="scrollHint">← scroll →</span>
         </div>
@@ -356,7 +416,9 @@ const FEATURED_BLURB =
         <div class="sectionHead split">
           <div>
             <h2 class="sectionTitle">New Frontiers: Full Episodes</h2>
-            <div class="mutedSmall">TV show I produced featuring University of Arizona stories</div>
+            <div class="mutedSmall">
+              TV show I produced featuring University of Arizona stories
+            </div>
           </div>
           <span class="scrollHint">← scroll →</span>
         </div>
@@ -455,7 +517,7 @@ const FEATURED_BLURB =
 
       <hr class="sectionDivider" />
 
-      {/* Browse categories at end */}
+      {/* Browse categories */}
       <section class="sectionBlock">
         <div class="sectionHead split">
           <div>
@@ -482,6 +544,7 @@ const FEATURED_BLURB =
             <div class="footerName">Bryan Nelson</div>
             <div class="footerSub">Founder, Catachresis Productions</div>
           </div>
+
           <div class="footerRight">
             <a href="/about" class="footerLink">About</a>
             <a href="/categories" class="footerLink">Browse Films</a>
@@ -492,8 +555,15 @@ const FEATURED_BLURB =
     </main>
 
     <style>
-      :global(body){margin:0;color:#fff;font-family:"Source Sans 3", ui-sans-serif, system-ui;background:#141414}
-      h1,h2,h3,.heroName,.sectionTitle,.featuredTitle,.footerName{font-family:"Manrope", system-ui}
+      :global(body){
+        margin:0;
+        color:#fff;
+        font-family:"Source Sans 3", ui-sans-serif, system-ui;
+        background:#141414;
+      }
+      h1,h2,h3,.heroName,.sectionTitle,.featuredTitle,.footerName{
+        font-family:"Manrope", system-ui;
+      }
 
       /* Filmic background */
       .bg{position:fixed;inset:0;z-index:-1;background:#141414}
@@ -508,36 +578,55 @@ const FEATURED_BLURB =
       .grain{
         position:absolute;inset:0;
         background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
-        opacity:.075; mix-blend-mode:overlay; pointer-events:none;
+        opacity:.075;
+        mix-blend-mode:overlay;
+        pointer-events:none;
       }
 
       .wrap{max-width:1120px;margin:54px auto;padding:0 20px}
 
       /* Hero */
       .heroTop{
-        display:flex;justify-content:space-between;align-items:flex-end;gap:18px;
-        padding:22px 20px;margin-bottom:18px;
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-end;
+        gap:18px;
+        padding:22px 20px;
+        margin-bottom:18px;
         border:1px solid rgba(255,255,255,0.08);
         border-radius:18px;
-        background: linear-gradient(180deg, rgba(20,20,20,0.92), rgba(12,12,12,0.80));
-        box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+        background:linear-gradient(180deg, rgba(20,20,20,0.92), rgba(12,12,12,0.80));
+        box-shadow:0 18px 50px rgba(0,0,0,0.45);
       }
-      .heroName{margin:0;font-size:2.6rem;letter-spacing:-0.01em;line-height:1.05;font-weight:700}
+      .heroName{
+        margin:0;
+        font-size:2.6rem;
+        letter-spacing:-0.01em;
+        line-height:1.05;
+        font-weight:700;
+      }
       .sub{margin:8px 0 0;color:rgba(255,255,255,0.72)}
       .subSecondary{
-  display:inline-block;
-  margin-top:4px;
-  color:rgba(255,255,255,0.60);
-  font-size:.98rem;
-}
+        display:inline-block;
+        margin-top:4px;
+        color:rgba(255,255,255,0.60);
+        font-size:.98rem;
+      }
       .actions{display:flex;gap:10px;flex-wrap:wrap}
       .btn{
         border:1px solid rgba(255,255,255,0.12);
-        padding:10px 14px;border-radius:999px;
-        color:#fff;text-decoration:none;background:rgba(18,18,18,0.65);
+        padding:10px 14px;
+        border-radius:999px;
+        color:#fff;
+        text-decoration:none;
+        background:rgba(18,18,18,0.65);
         transition:transform .18s ease, background .18s ease, border-color .18s ease;
       }
-      .btn:hover{transform:translateY(-2px);background:rgba(26,26,26,0.85);border-color:rgba(255,255,255,0.18)}
+      .btn:hover{
+        transform:translateY(-2px);
+        background:rgba(26,26,26,0.85);
+        border-color:rgba(255,255,255,0.18);
+      }
       .btn.ghost{background:transparent;color:rgba(255,255,255,0.82)}
       .btn.primary{
         position:relative;
@@ -547,10 +636,11 @@ const FEATURED_BLURB =
       }
       .btn.primary::after{
         content:"";
-        position:absolute;inset:-40%;
+        position:absolute;
+        inset:-40%;
         background:linear-gradient(90deg, transparent, rgba(255,215,0,0.22), transparent);
         transform:translateX(-60%) rotate(18deg);
-        animation: shimmer 2.9s ease-in-out infinite;
+        animation:shimmer 2.9s ease-in-out infinite;
         pointer-events:none;
       }
       @keyframes shimmer{
@@ -567,16 +657,27 @@ const FEATURED_BLURB =
         padding:18px 16px;
         border:1px solid rgba(255,255,255,0.08);
         border-radius:16px;
-        background: linear-gradient(180deg, rgba(12,12,12,0.95), rgba(8,8,8,0.85));
-        box-shadow: 0 18px 40px rgba(0,0,0,0.38);
+        background:linear-gradient(180deg, rgba(12,12,12,0.95), rgba(8,8,8,0.85));
+        box-shadow:0 18px 40px rgba(0,0,0,0.38);
       }
       .sectionHead{
-        display:flex;align-items:baseline;justify-content:flex-start;gap:12px;
-        margin-bottom:12px;position:relative;padding-left:12px;
+        display:flex;
+        align-items:baseline;
+        justify-content:flex-start;
+        gap:12px;
+        margin-bottom:12px;
+        position:relative;
+        padding-left:12px;
       }
       .sectionHead::before{
-        content:"";position:absolute;left:0;top:2px;bottom:2px;width:3px;border-radius:99px;
-        background: linear-gradient(180deg, rgba(255,215,0,0.95), rgba(80,170,255,0.70));
+        content:"";
+        position:absolute;
+        left:0;
+        top:2px;
+        bottom:2px;
+        width:3px;
+        border-radius:99px;
+        background:linear-gradient(180deg, rgba(255,215,0,0.95), rgba(80,170,255,0.70));
         box-shadow:0 0 18px rgba(255,215,0,0.10);
       }
       .sectionHead.split{justify-content:space-between}
@@ -585,11 +686,19 @@ const FEATURED_BLURB =
       .muted{color:#9a9a9a}
       .mutedSmall{color:rgba(255,255,255,0.60);font-size:.95rem}
 
-      /* Existing underline style kept for other 'seeAll' links (like "Browse all") */
-      .seeAll{color:rgba(255,255,255,0.72);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.18);padding-bottom:2px}
-      .seeAll:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.32)}
+      /* See all links */
+      .seeAll{
+        color:rgba(255,255,255,0.72);
+        text-decoration:none;
+        border-bottom:1px solid rgba(255,255,255,0.18);
+        padding-bottom:2px;
+      }
+      .seeAll:hover{
+        color:#fff;
+        border-bottom-color:rgba(255,255,255,0.32);
+      }
 
-      /* ✅ NEW: pill treatment ONLY for Selected Films link */
+      /* Selected Films pill */
       .seeAllPill{
         display:inline-flex;
         align-items:center;
@@ -613,102 +722,212 @@ const FEATURED_BLURB =
 
       /* Divider */
       .sectionDivider{
-        border:0;height:3px;margin:32px 0;border-radius:99px;
-        background: linear-gradient(90deg, rgba(20,20,20,0), rgba(255,255,255,0.20), rgba(20,20,20,0));
-        box-shadow: 0 0 26px rgba(255,255,255,0.08), 0 0 55px rgba(255,215,0,0.04);
+        border:0;
+        height:3px;
+        margin:32px 0;
+        border-radius:99px;
+        background:linear-gradient(90deg, rgba(20,20,20,0), rgba(255,255,255,0.20), rgba(20,20,20,0));
+        box-shadow:0 0 26px rgba(255,255,255,0.08), 0 0 55px rgba(255,215,0,0.04);
       }
 
       /* Featured */
       .featuredCard{
-        display:grid;grid-template-columns:1.65fr 1fr;gap:16px;
+        display:grid;
+        grid-template-columns:1.65fr 1fr;
+        gap:16px;
         border:1px solid rgba(255,255,255,0.10);
         border-radius:18px;
-        background: linear-gradient(180deg, rgba(16,16,16,0.92), rgba(10,10,10,0.86));
-        text-decoration:none;color:inherit;overflow:hidden;
+        background:linear-gradient(180deg, rgba(16,16,16,0.92), rgba(10,10,10,0.86));
+        text-decoration:none;
+        color:inherit;
+        overflow:hidden;
       }
       .thumb{aspect-ratio:16/9;overflow:hidden;background:#111}
-      .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+      .thumb img{
+        width:100%;
+        height:100%;
+        object-fit:cover;
+        display:block;
+      }
       .featuredImg{position:relative}
       .featuredOverlay{
-        position:absolute;inset:0;
-        background: linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.55));
-        display:flex;align-items:flex-start;justify-content:flex-start;padding:14px;
+        position:absolute;
+        inset:0;
+        background:linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.55));
+        display:flex;
+        align-items:flex-start;
+        justify-content:flex-start;
+        padding:14px;
       }
       .badge{
-        display:inline-flex;align-items:center;gap:8px;
-        padding:8px 12px;border-radius:999px;
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding:8px 12px;
+        border-radius:999px;
         border:1px solid rgba(255,215,0,0.30);
         background:rgba(0,0,0,0.38);
         color:rgba(255,215,0,0.95);
-        font-weight:600;font-size:.9rem;
-        backdrop-filter: blur(6px);
+        font-weight:600;
+        font-size:.9rem;
+        backdrop-filter:blur(6px);
       }
       .featuredMeta{padding:16px 16px 18px}
-      .featuredKicker{color:rgba(255,255,255,0.72);font-size:.95rem}
-      .featuredTitle{margin:10px 0 8px;font-size:1.65rem;letter-spacing:-0.01em;font-weight:700}
-      .featuredLogline{margin:10px 0 14px;color:rgba(255,255,255,0.72);line-height:1.7}
-      .ctaRow{display:flex;align-items:center;gap:12px;margin-top:10px}
-      .watchBtn{
-        display:inline-flex;align-items:center;justify-content:center;
-        border:1px solid rgba(255,215,0,0.28);
-        background: linear-gradient(180deg, rgba(255,215,0,0.16), rgba(16,16,16,0.85));
-        padding:10px 14px;border-radius:999px;font-weight:600;
+      .featuredKicker{
+        color:rgba(255,255,255,0.72);
+        font-size:.95rem;
       }
-      .featuredBlurb{margin:12px 0 0;color:rgba(255,255,255,0.70);line-height:1.65;font-size:1.02rem}
+      .featuredTitle{
+        margin:10px 0 8px;
+        font-size:1.65rem;
+        letter-spacing:-0.01em;
+        font-weight:700;
+      }
+      .featuredLogline{
+        margin:10px 0 14px;
+        color:rgba(255,255,255,0.72);
+        line-height:1.7;
+      }
+      .ctaRow{
+        display:flex;
+        align-items:center;
+        gap:12px;
+        margin-top:10px;
+      }
+      .watchBtn{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        border:1px solid rgba(255,215,0,0.28);
+        background:linear-gradient(180deg, rgba(255,215,0,0.16), rgba(16,16,16,0.85));
+        padding:10px 14px;
+        border-radius:999px;
+        font-weight:600;
+      }
+      .featuredBlurb{
+        margin:12px 0 0;
+        color:rgba(255,255,255,0.70);
+        line-height:1.65;
+        font-size:1.02rem;
+      }
 
-      /* Grid + cards */
-      .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+      /* Grid and cards */
+      .grid{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        gap:18px;
+      }
       .card{
         border:1px solid rgba(255,255,255,0.10);
         border-radius:16px;
-        background: linear-gradient(180deg, rgba(16,16,16,0.92), rgba(10,10,10,0.86));
-        text-decoration:none;color:inherit;display:block;overflow:hidden;
+        background:linear-gradient(180deg, rgba(16,16,16,0.92), rgba(10,10,10,0.86));
+        text-decoration:none;
+        color:inherit;
+        display:block;
+        overflow:hidden;
       }
       .meta{padding:12px 12px 14px}
       .title{font-weight:600}
-      .kicker{margin-top:6px;color:rgba(255,255,255,0.62);font-size:.95rem}
-      .awardsStack{margin-top:8px;font-size:.88rem;line-height:1.35}
+      .kicker{
+        margin-top:6px;
+        color:rgba(255,255,255,0.62);
+        font-size:.95rem;
+      }
+      .awardsStack{
+        margin-top:8px;
+        font-size:.88rem;
+        line-height:1.35;
+      }
 
       /* Hover */
-      .cardHover{transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;will-change:transform}
-      .cardHover .thumb img{transition:transform .32s ease;will-change:transform}
-      .cardHover:hover{transform:translateY(-4px);box-shadow:0 22px 44px rgba(0,0,0,.55);border-color:rgba(255,255,255,0.16)}
+      .cardHover{
+        transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+        will-change:transform;
+      }
+      .cardHover .thumb img{
+        transition:transform .32s ease;
+        will-change:transform;
+      }
+      .cardHover:hover{
+        transform:translateY(-4px);
+        box-shadow:0 22px 44px rgba(0,0,0,.55);
+        border-color:rgba(255,255,255,0.16);
+      }
       .cardHover:hover .thumb img{transform:scale(1.04)}
       @media (prefers-reduced-motion: reduce){
         .cardHover, .cardHover .thumb img{transition:none}
       }
 
       /* Rolodex rows */
-      .scrollHint{color:rgba(255,255,255,0.55);font-size:.98rem}
+      .scrollHint{
+        color:rgba(255,255,255,0.55);
+        font-size:.98rem;
+      }
       .rowWrap{position:relative}
       .rowPad{padding:2px 4px 10px}
       .rowStrip{
-        display:flex;gap:16px;
+        display:flex;
+        gap:16px;
         overflow-x:auto;
         scroll-snap-type:x mandatory;
         scroll-behavior:smooth;
         -webkit-overflow-scrolling:touch;
         padding:0;
       }
-      .rowCard{flex:0 0 auto;width:262px;scroll-snap-align:start}
-
+      .rowCard{
+        flex:0 0 auto;
+        width:262px;
+        scroll-snap-align:start;
+      }
       .rowArrow{
-        position:absolute;top:50%;transform:translateY(-55%);
-        z-index:5;width:44px;height:44px;border-radius:999px;
+        position:absolute;
+        top:50%;
+        transform:translateY(-55%);
+        z-index:5;
+        width:44px;
+        height:44px;
+        border-radius:999px;
         border:1px solid rgba(255,255,255,0.14);
-        background:rgba(10,10,10,.75);color:#fff;
-        font-size:28px;display:flex;align-items:center;justify-content:center;
-        cursor:pointer;transition:opacity .18s ease, transform .18s ease, background .18s ease;
-        opacity:0;pointer-events:none;backdrop-filter: blur(6px);
+        background:rgba(10,10,10,.75);
+        color:#fff;
+        font-size:28px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        cursor:pointer;
+        transition:opacity .18s ease, transform .18s ease, background .18s ease;
+        opacity:0;
+        pointer-events:none;
+        backdrop-filter:blur(6px);
       }
       .rowArrow.left{left:8px}
       .rowArrow.right{right:8px}
-      .rowWrap.is-scrollable .rowArrow{opacity:.92;pointer-events:auto}
-      .rowWrap.at-left .rowArrow.left{opacity:0 !important;pointer-events:none !important}
-      .rowWrap.at-right .rowArrow.right{opacity:0 !important;pointer-events:none !important}
-      .rowArrow:hover{background:rgba(22,22,22,.88);transform:translateY(-55%) scale(1.04)}
-
-      .edgeGlow{position:absolute;top:0;bottom:0;width:86px;z-index:4;opacity:0;pointer-events:none;transition:opacity .18s ease}
+      .rowWrap.is-scrollable .rowArrow{
+        opacity:.92;
+        pointer-events:auto;
+      }
+      .rowWrap.at-left .rowArrow.left{
+        opacity:0 !important;
+        pointer-events:none !important;
+      }
+      .rowWrap.at-right .rowArrow.right{
+        opacity:0 !important;
+        pointer-events:none !important;
+      }
+      .rowArrow:hover{
+        background:rgba(22,22,22,.88);
+        transform:translateY(-55%) scale(1.04);
+      }
+      .edgeGlow{
+        position:absolute;
+        top:0;
+        bottom:0;
+        width:86px;
+        z-index:4;
+        opacity:0;
+        pointer-events:none;
+        transition:opacity .18s ease;
+      }
       .edgeGlow.left{left:0}
       .edgeGlow.right{right:0}
       .edgeGlow.left{
@@ -721,32 +940,85 @@ const FEATURED_BLURB =
           radial-gradient(ellipse at right, rgba(255,215,0,.12), transparent 60%),
           linear-gradient(to left, rgba(20,20,20,1), rgba(20,20,20,0));
       }
-      .edgeGlow.is-on{opacity:1;animation:glowPulse 1.65s ease-in-out infinite}
-      @keyframes glowPulse{0%,100%{filter:blur(0)}50%{filter:blur(1.4px)}}
+      .edgeGlow.is-on{
+        opacity:1;
+        animation:glowPulse 1.65s ease-in-out infinite;
+      }
+      @keyframes glowPulse{
+        0%,100%{filter:blur(0)}
+        50%{filter:blur(1.4px)}
+      }
 
       /* Browse pills */
-      .catRow{display:flex;flex-wrap:wrap;gap:10px}
+      .catRow{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+      }
       .catPill{
-        display:inline-flex;align-items:center;gap:10px;
-        padding:10px 14px;border-radius:999px;
+        display:inline-flex;
+        align-items:center;
+        gap:10px;
+        padding:10px 14px;
+        border-radius:999px;
         border:1px solid rgba(255,255,255,0.10);
-        background: linear-gradient(180deg, rgba(18,18,18,.92), rgba(10,10,10,.86));
+        background:linear-gradient(180deg, rgba(18,18,18,.92), rgba(10,10,10,.86));
         color:rgba(255,255,255,0.90);
         text-decoration:none;
-        transition: transform .18s ease, border-color .18s ease, background .18s ease;
+        transition:transform .18s ease, border-color .18s ease, background .18s ease;
       }
-      .pillDot{width:8px;height:8px;border-radius:99px;background:rgba(255,215,0,0.8);box-shadow:0 0 14px rgba(255,215,0,0.18)}
-      .catPill:hover{transform: translateY(-2px);border-color:rgba(255,255,255,0.18);background: linear-gradient(180deg, rgba(24,24,24,.95), rgba(12,12,12,.90))}
+      .pillDot{
+        width:8px;
+        height:8px;
+        border-radius:99px;
+        background:rgba(255,215,0,0.8);
+        box-shadow:0 0 14px rgba(255,215,0,0.18);
+      }
+      .catPill:hover{
+        transform:translateY(-2px);
+        border-color:rgba(255,255,255,0.18);
+        background:linear-gradient(180deg, rgba(24,24,24,.95), rgba(12,12,12,.90));
+      }
 
       /* Footer */
       .footer{margin:34px 0 20px}
-      .footerLine{height:1px;background:linear-gradient(90deg, rgba(20,20,20,0), rgba(255,255,255,0.12), rgba(20,20,20,0));box-shadow:0 0 18px rgba(255,255,255,0.05);margin-bottom:18px}
-      .footerInner{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;flex-wrap:wrap}
-      .footerName{font-weight:700;font-size:1.05rem}
-      .footerSub{color:rgba(255,255,255,0.58);font-size:.98rem;margin-top:4px}
-      .footerRight{display:flex;gap:14px;flex-wrap:wrap}
-      .footerLink{color:rgba(255,255,255,0.72);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.16);padding-bottom:2px}
-      .footerLink:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.30)}
+      .footerLine{
+        height:1px;
+        background:linear-gradient(90deg, rgba(20,20,20,0), rgba(255,255,255,0.12), rgba(20,20,20,0));
+        box-shadow:0 0 18px rgba(255,255,255,0.05);
+        margin-bottom:18px;
+      }
+      .footerInner{
+        display:flex;
+        justify-content:space-between;
+        gap:16px;
+        align-items:flex-end;
+        flex-wrap:wrap;
+      }
+      .footerName{
+        font-weight:700;
+        font-size:1.05rem;
+      }
+      .footerSub{
+        color:rgba(255,255,255,0.58);
+        font-size:.98rem;
+        margin-top:4px;
+      }
+      .footerRight{
+        display:flex;
+        gap:14px;
+        flex-wrap:wrap;
+      }
+      .footerLink{
+        color:rgba(255,255,255,0.72);
+        text-decoration:none;
+        border-bottom:1px solid rgba(255,255,255,0.16);
+        padding-bottom:2px;
+      }
+      .footerLink:hover{
+        color:#fff;
+        border-bottom-color:rgba(255,255,255,0.30);
+      }
 
       @media(max-width:900px){
         .grid{grid-template-columns:repeat(2,1fr)}
@@ -755,7 +1027,10 @@ const FEATURED_BLURB =
       }
       @media(max-width:600px){
         .grid{grid-template-columns:1fr}
-        .heroTop{flex-direction:column;align-items:flex-start}
+        .heroTop{
+          flex-direction:column;
+          align-items:flex-start;
+        }
         .rowCard{width:235px}
         .rowArrow{display:none}
       }
@@ -763,11 +1038,11 @@ const FEATURED_BLURB =
 
     <script>
       function setupRolodexRow(rowWrap: HTMLElement) {
-        const strip = rowWrap.querySelector("[data-rowstrip]");
-        const btnL = rowWrap.querySelector('[data-arrow="left"]');
-        const btnR = rowWrap.querySelector('[data-arrow="right"]');
-        const glowL = rowWrap.querySelector('[data-glow="left"]');
-        const glowR = rowWrap.querySelector('[data-glow="right"]');
+        const strip = rowWrap.querySelector<HTMLElement>("[data-rowstrip]");
+        const btnL = rowWrap.querySelector<HTMLButtonElement>('[data-arrow="left"]');
+        const btnR = rowWrap.querySelector<HTMLButtonElement>('[data-arrow="right"]');
+        const glowL = rowWrap.querySelector<HTMLElement>('[data-glow="left"]');
+        const glowR = rowWrap.querySelector<HTMLElement>('[data-glow="right"]');
 
         if (!strip) return;
 
@@ -808,8 +1083,8 @@ const FEATURED_BLURB =
       }
 
       document.querySelectorAll("[data-rowwrap]").forEach((el) => {
-  if (el instanceof HTMLElement) setupRolodexRow(el);
-});
+        if (el instanceof HTMLElement) setupRolodexRow(el);
+      });
     </script>
   </body>
 </html>

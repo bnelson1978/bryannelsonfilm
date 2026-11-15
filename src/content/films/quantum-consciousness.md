@@ -2,6 +2,7 @@
 title: "Quantum Consciousness and the Origin of Life"
 year: 2025
 categories: ["Human Interest", "Space & Astronomy"]
+award: "Emmy Award Winner"
 featured: true
 homeSections: ["osiris-rex"]
 homeSectionOrder:

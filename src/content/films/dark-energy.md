@@ -2,6 +2,7 @@
 title: "Dark Energy & the Ultimate Fate of the Universe"
 year: 2026
 categories: ["Space & Astronomy", "Innovation & Technology"]
+award: "Emmy Award Nominee"
 home: true
 homeOrder: 1
 platform: "youtube"

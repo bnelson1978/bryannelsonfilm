@@ -2,6 +2,8 @@
 title: "Evening Under the Stars"
 year: 2023
 categories: ["Space & Astronomy", "Human Interest", "Education"]
+home: true
+homeOrder: 14
 platform: "youtube"
 videoId: "L4QU-zILv1g"
 thumbnail: "/images/films/evening-under-stars.jpg"

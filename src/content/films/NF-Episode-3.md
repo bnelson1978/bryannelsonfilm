@@ -2,9 +2,10 @@
 title: "New Frontiers Episode 3"
 year: 2024
 categories: ["New Frontiers"]
-homeSections: ["new-frontiers"]
+homeSections: ["new-frontiers", "osiris-rex"]
 homeSectionOrder:
   new-frontiers: 5
+  osiris-rex: 6
 platform: "youtube"
 videoId: "1zng3xHk3jI"
 thumbnail: "/images/films/ep3.jpg"

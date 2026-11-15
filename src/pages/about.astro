@@ -1,3 +1,4 @@
+
 ---
 const PAGE_TITLE = "About — Bryan Nelson";
 ---
@@ -7,6 +8,52 @@ const PAGE_TITLE = "About — Bryan Nelson";
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>{PAGE_TITLE}</title>
+
+    <meta
+      name="description"
+      content="Learn about Bryan Nelson, a nine-time Regional Emmy Award-winning documentary filmmaker, cinematographer, and journalist, and Content Producer at Washington State University."
+    />
+
+    <link rel="canonical" href="https://bryannelsonfilm.com/about" />
+
+    <meta property="og:type" content="profile" />
+    <meta
+      property="og:title"
+      content="About Bryan Nelson | Documentary Filmmaker"
+    />
+    <meta
+      property="og:description"
+      content="Biography of Bryan Nelson, nine-time Regional Emmy Award-winning documentary filmmaker, cinematographer, and journalist."
+    />
+    <meta property="og:url" content="https://bryannelsonfilm.com/about" />
+    <meta
+      property="og:image"
+      content="https://bryannelsonfilm.com/images/about-portrait.jpg"
+    />
+    <meta
+      property="og:image:alt"
+      content="Portrait of Bryan Nelson, Emmy Award-winning documentary filmmaker"
+    />
+    <meta name="twitter:card" content="summary" />
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        "@id": "https://bryannelsonfilm.com/about#profile",
+        "url": "https://bryannelsonfilm.com/about",
+        "name": "About Bryan Nelson",
+        "mainEntity": {
+          "@type": "Person",
+          "@id": "https://bryannelsonfilm.com/#person",
+          "name": "Bryan Nelson",
+          "url": "https://bryannelsonfilm.com/",
+          "image": "https://bryannelsonfilm.com/images/about-portrait.jpg",
+          "jobTitle": "Documentary Filmmaker, Cinematographer, Journalist, and Content Producer"
+        }
+      })}
+    />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -41,11 +88,11 @@ const PAGE_TITLE = "About — Bryan Nelson";
         </div>
 
         <article class="bio">
-          <!-- Portrait (added) -->
+          <!-- Portrait -->
           <img
             class="portraitFloat"
             src="/images/about-portrait.jpg"
-            alt="Portrait of Bryan Nelson"
+            alt="Bryan Nelson, Emmy Award-winning documentary filmmaker and cinematographer"
             loading="eager"
             decoding="async"
           />
@@ -55,16 +102,20 @@ const PAGE_TITLE = "About — Bryan Nelson";
           </p>
 
           <p>
-            Most recently, Bryan served as a producer for Arizona Public Media (AZPM), the PBS affiliate in southern Arizona, where he produced more than 60 short films for the station’s flagship television program <i>Arizona Illustrated</i>, primarily covering breakthroughs in science, research, and the arts. He was also grant-funded to report on science and research at the University of Arizona, where he created and produced the television series <i>New Frontiers</i>, which showcased those stories.
+            Bryan currently serves as Content Producer for Washington State University's Office of Research, where he leads video production and multimedia storytelling highlighting the university's scientific discoveries, research initiatives, and innovations. Working closely with researchers and university leadership, he develops documentaries, short films, podcasts, and other content that brings groundbreaking research to life for audiences beyond academia. His work spans a wide range of disciplines, from agriculture and environmental sustainability to advanced technology, engineering, and the health sciences, with an emphasis on revealing the people, ideas, and discoveries driving scientific progress.
           </p>
 
-          <!-- Wrap under image begins here (paragraph 3) -->
+          <!-- Wrap under image begins here -->
           <p class="wrapUnder">
-            Working closely with the University of Arizona — an R1 research institution and global leader in space sciences — Bryan produced films covering many of the most significant NASA missions of the past decade, with rare behind-the-scenes access to the teams behind OSIRIS-REx, the James Webb Space Telescope, and Europa Clipper missions. His work has reached worldwide audiences through coverage of history-making scientific milestones, including the Event Horizon Telescope’s first-ever image of a black hole, the global race to understand the origins of COVID-19 and develop vaccines, and the discovery of 23,000-year-old human footprints at White Sands National Park — findings that are reshaping our understanding of the earliest human presence in the Americas.
+            Previously, Bryan was a producer for Arizona Public Media (AZPM), the PBS affiliate in southern Arizona, where he produced more than 60 short films for the station’s flagship television program <i>Arizona Illustrated</i>, primarily covering breakthroughs in science, research, and the arts. He was also grant-funded to report on science and research at the University of Arizona, where he created and produced the television series <i>New Frontiers</i>, which showcased those stories.
           </p>
 
           <p>
-            Collectively, his work has earned 8 Regional Emmy Awards (from 19 nominations) and 3 Edward R. Murrow Awards, recognizing excellence in storytelling, innovation, and public-interest journalism.
+            Throughout his career, Bryan has had the opportunity to produce films exploring some of the world's most significant scientific discoveries and breakthroughs. His work includes coverage of landmark NASA missions such as OSIRIS-REx, the James Webb Space Telescope, and Europa Clipper, as well as history-making milestones like the Event Horizon Telescope’s first-ever image of a black hole, the global race to understand the origins of COVID-19 and develop vaccines, and the discovery of 23,000-year-old human footprints at White Sands National Park — findings that are reshaping our understanding of the earliest human presence in the Americas. His films have reached audiences around the world, bringing these extraordinary scientific achievements and the people behind them to life.
+          </p>
+
+          <p>
+            Collectively, his work has earned <b>9 Regional Emmy Awards (from 21 nominations)</b> and <b>3 Edward R. Murrow Awards</b>, recognizing excellence in storytelling, innovation, and public-interest journalism.
           </p>
 
           <p>
@@ -119,30 +170,57 @@ const PAGE_TITLE = "About — Bryan Nelson";
       .grain{
         position:absolute;inset:0;
         background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
-        opacity:.075; mix-blend-mode:overlay; pointer-events:none;
+        opacity:.075;
+        mix-blend-mode:overlay;
+        pointer-events:none;
       }
 
-      .wrap{max-width:920px;margin:54px auto;padding:0 20px}
+      .wrap{
+        max-width:920px;
+        margin:54px auto;
+        padding:0 20px;
+      }
 
       /* Top nav */
-      .top{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0 22px}
-      .brand{color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem}
-      .nav{display:flex;gap:12px;flex-wrap:wrap}
+      .top{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:14px;
+        padding:14px 0 22px;
+      }
+      .brand{
+        color:#fff;
+        text-decoration:none;
+        font-weight:700;
+        font-size:1.1rem;
+      }
+      .nav{
+        display:flex;
+        gap:12px;
+        flex-wrap:wrap;
+      }
       .navLink{
         color:rgba(255,255,255,0.75);
         text-decoration:none;
         border-bottom:1px solid rgba(255,255,255,0.16);
         padding-bottom:2px;
       }
-      .navLink:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.32)}
-      .navLink.active{color:#fff;border-bottom-color:rgba(255,215,0,0.45)}
+      .navLink:hover{
+        color:#fff;
+        border-bottom-color:rgba(255,255,255,0.32);
+      }
+      .navLink.active{
+        color:#fff;
+        border-bottom-color:rgba(255,215,0,0.45);
+      }
 
       /* Panel */
       .panel{
         border:1px solid rgba(255,255,255,0.08);
         border-radius:16px;
-        background: linear-gradient(180deg, rgba(12,12,12,0.95), rgba(8,8,8,0.85));
-        box-shadow: 0 18px 40px rgba(0,0,0,0.38);
+        background:linear-gradient(180deg, rgba(12,12,12,0.95), rgba(8,8,8,0.85));
+        box-shadow:0 18px 40px rgba(0,0,0,0.38);
         padding:24px 26px 28px;
       }
 
@@ -159,11 +237,15 @@ const PAGE_TITLE = "About — Bryan Nelson";
         bottom:4px;
         width:3px;
         border-radius:99px;
-        background: linear-gradient(180deg, rgba(255,215,0,0.95), rgba(80,170,255,0.70));
+        background:linear-gradient(180deg, rgba(255,215,0,0.95), rgba(80,170,255,0.70));
         box-shadow:0 0 18px rgba(255,215,0,0.08);
       }
 
-      h1{margin:0;font-size:2rem;letter-spacing:-0.01em}
+      h1{
+        margin:0;
+        font-size:2rem;
+        letter-spacing:-0.01em;
+      }
 
       .bio p{
         margin:18px 0 0;
@@ -173,20 +255,20 @@ const PAGE_TITLE = "About — Bryan Nelson";
       }
       .bio p:first-of-type{margin-top:0}
 
-      /* Portrait sizing + wrap control (ONLY change requested) */
+      /* Portrait sizing and wrap control */
       .portraitFloat{
         float:left;
-        width:240px;          /* resize: balanced for two paragraphs beside */
-        height:auto;          /* no cropping */
+        width:240px;
+        height:auto;
         margin:4px 22px 14px 0;
         border-radius:14px;
         border:1px solid rgba(255,255,255,0.12);
       }
 
-      /* Force wrapping under the image starting at paragraph 3 */
-      .wrapUnder{ clear:left; }
+      /* Wrap under portrait starting at paragraph 3 */
+      .wrapUnder{clear:left}
 
-      @media (max-width: 720px){
+      @media (max-width:720px){
         .portraitFloat{
           float:none;
           display:block;
@@ -194,26 +276,44 @@ const PAGE_TITLE = "About — Bryan Nelson";
           max-width:420px;
           margin:0 auto 18px;
         }
-        .wrapUnder{ clear:none; }
+        .wrapUnder{clear:none}
       }
 
       /* Footer */
       .footer{margin:30px 0 10px}
       .footerLine{
-        height:3px;margin:26px 0 18px;border-radius:99px;
-        background: linear-gradient(90deg, rgba(20,20,20,0), rgba(255,255,255,0.20), rgba(20,20,20,0));
-        box-shadow: 0 0 26px rgba(255,255,255,0.08);
+        height:3px;
+        margin:26px 0 18px;
+        border-radius:99px;
+        background:linear-gradient(90deg, rgba(20,20,20,0), rgba(255,255,255,0.20), rgba(20,20,20,0));
+        box-shadow:0 0 26px rgba(255,255,255,0.08);
       }
-      .footerInner{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap}
-      .footerSub{color:rgba(255,255,255,0.58);margin-top:4px}
-      .footerLinks{display:flex;gap:14px;flex-wrap:wrap}
+      .footerInner{
+        display:flex;
+        justify-content:space-between;
+        gap:14px;
+        align-items:flex-end;
+        flex-wrap:wrap;
+      }
+      .footerSub{
+        color:rgba(255,255,255,0.58);
+        margin-top:4px;
+      }
+      .footerLinks{
+        display:flex;
+        gap:14px;
+        flex-wrap:wrap;
+      }
       .footerLinks a{
         color:rgba(255,255,255,0.72);
         text-decoration:none;
         border-bottom:1px solid rgba(255,255,255,0.16);
         padding-bottom:2px;
       }
-      .footerLinks a:hover{color:#fff;border-bottom-color:rgba(255,255,255,0.30)}
+      .footerLinks a:hover{
+        color:#fff;
+        border-bottom-color:rgba(255,255,255,0.30);
+      }
     </style>
   </body>
 </html>
